@@ -1,21 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using TeamChoice.WebApis.Application.Services;
 using TeamChoice.WebApis.Configuration;
 using TeamChoice.WebApis.Models;
 using TeamChoice.WebApis.Models.DTOs;
 
-namespace TeamChoice.WebApis.Controllers;
-
-[ApiController]
-[Route("api/v1/transaction/cancel")]
-public class CancelRequestController : ControllerBase
+namespace TeamChoice.WebApis.Controllers
 {
-    private readonly ICancellationService _cancellationService;
-    private readonly IAgentTransactionFacade _agentTransactionFacade;
-    private readonly ClientUrlProperties _clientProps;
-    private readonly ILogger<CancelRequestController> _logger;
+    [ApiController]
+    [Route("api/v1/transaction/cancel")]
+    public class CancelRequestController : ControllerBase
+    {
+        private readonly ICancellationService _cancellationService;
+        private readonly IAgentTransactionFacade _agentTransactionFacade;
+        private readonly ClientUrlProperties _clientProps;
+        private readonly ILogger<CancelRequestController> _logger;
 
         public CancelRequestController(
             ICancellationService cancellationService,
@@ -23,37 +22,37 @@ public class CancelRequestController : ControllerBase
              ClientUrlProperties clientProps,
             ILogger<CancelRequestController> logger)
         {
-            //_cancellationService = cancellationService;
+            _cancellationService = cancellationService;
             _agentTransactionFacade = agentTransactionFacade;
             _clientProps = clientProps;
             _logger = logger;
         }
 
-    [HttpPost]
-    public async Task<IActionResult> Cancel([FromBody] CancelTransactionDTO request)
-    {
-        _logger.LogInformation("🛑 Received cancellation request for transactionId={TransactionId}", request.TawakalTxnRef);
-
-        var cancelPayload = BuildCancelRequest(request);
-
-        try
+        [HttpPost]
+        public async Task<IActionResult> Cancel([FromBody] CancelTransactionDTO request)
         {
-            var status = await _agentTransactionFacade.ValidateTransactionStatusAsync(request.TawakalTxnRef);
+            _logger.LogInformation("🛑 Received cancellation request for transactionId={TransactionId}", request.TawakalTxnRef);
 
-            if (string.IsNullOrEmpty(status))
+            var cancelPayload = BuildCancelRequest(request);
+
+            try
             {
-                // Handle "Transaction not found" case from switchIfEmpty logic
-                throw new ArgumentException("Transaction not found: " + request.TawakalTxnRef);
-            }
+                var status = await _agentTransactionFacade.ValidateTransactionStatusAsync(request.TawakalTxnRef);
 
-            _logger.LogInformation("✅ Transaction {TransactionId} current status: {Status}", request.TawakalTxnRef, status);
+                if (string.IsNullOrEmpty(status))
+                {
+                    // Handle "Transaction not found" case from switchIfEmpty logic
+                    throw new ArgumentException("Transaction not found: " + request.TawakalTxnRef);
+                }
+
+                _logger.LogInformation("✅ Transaction {TransactionId} current status: {Status}", request.TawakalTxnRef, status);
 
                 if (!IsCancellable(status))
                 {
                     return Respond((int)HttpStatusCode.OK, "Transaction is not valid for cancellation", "error", request.TawakalTxnRef);
                 }
 
-            var resultDTO = await _cancellationService.CancelTransactionAsync(cancelPayload);
+                var resultDTO = await _cancellationService.CancelTransactionAsync(cancelPayload);
 
                 if (resultDTO != null)
                 {
@@ -71,38 +70,40 @@ public class CancelRequestController : ControllerBase
             }
         }
 
-    private bool IsCancellable(string status)
-    {
-        return "READY".Equals(status, StringComparison.OrdinalIgnoreCase);
-    }
-
-    private CancelReceiveRequest BuildCancelRequest(CancelTransactionDTO dto)
-    {
-        // Assuming Mapper exists or manual mapping
-        var req = new CancelReceiveRequest
+        private bool IsCancellable(string status)
         {
-            // Map fields from dto...
-            TawakalTxnRef = dto.TawakalTxnRef
-        };
-        req.Loccode = _clientProps.Loccode;
-        req.Agtaprvduser = _clientProps.UserCred;
-        return req;
-    }
+            return "READY".Equals(status, StringComparison.OrdinalIgnoreCase);
+        }
 
-    private IActionResult Respond(int statusCode, string message, string txnStatus, string transactionId)
-    {
-        var response = new HttpResponse
+        private CancelReceiveRequest BuildCancelRequest(CancelTransactionDTO dto)
         {
-            TimeStamp = DateTime.Now.ToString(),
-            Status = statusCode == 200 ? "OK" : "ERROR", // Simplified mapping
-            StatusCode = statusCode,
-            Data = new TransactionResult
+            // Assuming Mapper exists or manual mapping
+            var req = new CancelReceiveRequest
             {
-                Status = txnStatus,
-                Message = message,
-                TawakalTxnRef = transactionId
-            }
-        };
-        return StatusCode(statusCode, response);
+                // Map fields from dto...
+                TawakalTxnRef = dto.TawakalTxnRef
+            };
+            req.Loccode = _clientProps.Loccode;
+            req.Agtaprvduser = _clientProps.UserCred;
+            return req;
+        }
+
+        // Updated return type to use ApiResponse to avoid conflict with System.Web.HttpResponse
+        private IActionResult Respond(int statusCode, string message, string txnStatus, string transactionId)
+        {
+            var response = new ApiResponse
+            {
+                TimeStamp = DateTime.Now.ToString(),
+                Status = statusCode == 200 ? "OK" : "ERROR", // Simplified mapping
+                StatusCode = statusCode,
+                Data = new TransactionResult
+                {
+                    Status = txnStatus,
+                    Message = message,
+                    TawakalTxnRef = transactionId
+                }
+            };
+            return StatusCode(statusCode, response);
+        }
     }
 }

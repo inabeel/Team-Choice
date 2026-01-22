@@ -95,7 +95,7 @@ namespace TeamChoice.WebApis.Application.Services
         {
             _logger.LogDebug("🔗 Resolving serviceCode from reference number: {ServiceCode}", serviceCode);
             var code = await _agentRepository.FindServiceCodeUsingBankServiceTypeAsync(serviceCode);
-            return code ?? serviceCode;
+            return code?.ToString() ?? serviceCode;
         }
 
         public async Task<string> ValidateTransactionAsync(string partnerReference)

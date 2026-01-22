@@ -1,6 +1,8 @@
 
 using Microsoft.Extensions.Options;
 using TeamChoice.WebApis.Application;
+using TeamChoice.WebApis.Application.Orchestrators;
+using TeamChoice.WebApis.Application.Services.YourNamespace.Services;
 using TeamChoice.WebApis.Domain.Policies;
 using TeamChoice.WebApis.Domain.Processors;
 using TeamChoice.WebApis.Domain.Validation;
@@ -23,7 +25,7 @@ public class Program
         builder.Services.AddScoped<ITransactionOrchestrator, TransactionOrchestrator>();
         builder.Services.AddScoped<ITransactionValidator, TransactionValidator>();
         builder.Services.AddScoped<ITransactionProcessor, TransactionProcessor>();
-
+        builder.Services.AddScoped<IDatabaseService, DatabaseService>();
 
         builder.Services.Configure<ServiceCatalogOptions>(
             builder.Configuration.GetSection("ServiceCatalog"));
