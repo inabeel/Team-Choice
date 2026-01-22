@@ -1,6 +1,7 @@
 ﻿using System;
 using TeamChoice.WebApis.Models.DTOs.Transactions;
 using TeamChoice.WebApis.Domain.Processors;
+using TeamChoice.WebApis.Models.DTOs;
 
 namespace TeamChoice.WebApis.Domain.Services;
 

@@ -41,12 +41,3 @@ public sealed class TransactionProcessor : ITransactionProcessor
     }
 }
 
-public sealed class PartnerTransaction
-{
-    public string? TransactionDate { get; init; }
-    public string? PartnerReference { get; init; }
-    public string? PartnerCode { get; init; }
-    public string Status { get; init; } = default!;
-    public string? Payload { get; init; }
-}
-
