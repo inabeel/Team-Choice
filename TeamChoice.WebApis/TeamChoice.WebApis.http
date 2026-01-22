@@ -1,0 +1,6 @@
+@TeamChoice.WebApis_HostAddress = http://localhost:5280
+
+GET {{TeamChoice.WebApis_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
