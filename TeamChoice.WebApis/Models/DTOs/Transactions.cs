@@ -1,4 +1,7 @@
-﻿namespace TeamChoice.WebApis.Models.DTOs.Transactions;
+﻿using System.ComponentModel.DataAnnotations;
+using Swashbuckle.AspNetCore.Annotations;
+
+namespace TeamChoice.WebApis.Models.DTOs.Transactions;
 
 public record TransactionRequestDto
 {
@@ -80,3 +83,25 @@ public record PaymentDto
     public double? ExchangeRate { get; init; }
     public double? Fee { get; init; }
 }
+
+public class AccountsLookupRequest
+{
+    /// <summary>
+    /// Service code
+    /// </summary>
+    /// <example>00014</example>
+    public string ServiceCode { get; set; } = default!;
+
+    /// <summary>
+    /// Phone number in E.164 format
+    /// </summary>
+    /// <example>+254790715176</example>
+    public string PhoneNumber { get; set; } = default!;
+
+    /// <summary>
+    /// Optional payment mode appended for special services
+    /// </summary>
+    /// <example>MPESA</example>
+    public string? PaymentMode { get; set; }
+}
+
