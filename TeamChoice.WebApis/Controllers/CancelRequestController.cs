@@ -1,5 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using TeamChoice.WebApis.Application.Services;
+using TeamChoice.WebApis.Configuration;
+using TeamChoice.WebApis.Models;
+using TeamChoice.WebApis.Models.DTOs;
 
 namespace TeamChoice.WebApis.Controllers
 {
@@ -15,10 +20,10 @@ namespace TeamChoice.WebApis.Controllers
         public CancelRequestController(
             ICancellationService cancellationService,
             IAgentTransactionFacade agentTransactionFacade,
-            ClientUrlProperties clientProps,
+             ClientUrlProperties clientProps,
             ILogger<CancelRequestController> logger)
         {
-            _cancellationService = cancellationService;
+            //_cancellationService = cancellationService;
             _agentTransactionFacade = agentTransactionFacade;
             _clientProps = clientProps;
             _logger = logger;
@@ -45,24 +50,24 @@ namespace TeamChoice.WebApis.Controllers
 
                 if (!IsCancellable(status))
                 {
-                    return Respond(HttpStatus.OK, "Transaction is not valid for cancellation", "error", request.TawakalTxnRef);
+                    return Respond((int)HttpStatusCode.OK, "Transaction is not valid for cancellation", "error", request.TawakalTxnRef);
                 }
 
                 var resultDTO = await _cancellationService.CancelTransactionAsync(cancelPayload);
 
                 if (resultDTO != null)
                 {
-                    return Respond(HttpStatus.OK, "Transaction successfully cancelled", "Cancelled", request.TawakalTxnRef);
+                    return Respond((int)HttpStatusCode.OK, "Transaction successfully cancelled", "Cancelled", request.TawakalTxnRef);
                 }
                 else
                 {
-                    return Respond(HttpStatus.BadRequest, "Cancellation failed — provider did not respond", "error", request.TawakalTxnRef);
+                    return Respond((int)HttpStatusCode.BadRequest, "Cancellation failed — provider did not respond", "error", request.TawakalTxnRef);
                 }
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "❌ Error during cancellation process: {Message}", e.Message);
-                return Respond(HttpStatus.InternalServerError, "Unexpected error occurred during cancellation", "FAILED", request.TawakalTxnRef);
+                return Respond((int)HttpStatusCode.InternalServerError, "Unexpected error occurred during cancellation", "FAILED", request.TawakalTxnRef);
             }
         }
 

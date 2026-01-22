@@ -3,9 +3,42 @@ using TeamChoice.WebApis.Models.DTOs.Transactions;
 
 namespace TeamChoice.WebApis.Models.DTOs
 {
-    public class SMTMstMpUser { }
+    public class SMTMstMpUser {
+        public string MpName { get; set; }
+        public string OrgCode { get; set; }
+        public string MpUserId { get; set; }
+        public string MpCode { get; set; }
+        public string UserId { get; set; }
+        public string Pin { get; set; }
+        public string AgentCode { get; set; }
+        public string Password1 { get; set; }
+        public string Password2 { get; set; }
+        public string Password3 { get; set; }
+        public string LocCode { get; set; }
+        public string SubCode { get; set; }
+        public string CmpCode { get; set; }
+        public string ActiveFlag { get; set; }
+        public string Url { get; set; }
+        public string MpAgentCode { get; set; }
+        public string AddInfo1 { get; set; }
+        public string AddInfo2 { get; set; }
+        public string AddInfo3 { get; set; }
+        public string AddInfo4 { get; set; }
+        public string AddInfo5 { get; set; }
+        public string IsRate { get; set; }
+    }
 
-    public class OutboundProviderCredential { }
+    public class OutboundProviderCredential
+    {
+        public int? ProviderId { get; set; }
+        public string ProviderName { get; set; }
+        public string ServiceCode { get; set; }
+        public string ServiceName { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string SecretKey { get; set; }
+        public string BaseURL { get; set; }
+    }
 
     public class ExchangeRateResult
     {
@@ -178,6 +211,7 @@ namespace YourNamespace.Repositories
     public interface IDatabaseClient
     {
         Task<T> ExecuteStoredProcedureAsync<T>(string procedureName, Dictionary<string, object> parameters);
+        Task<decimal> QueryOneAsync(string fIND_RECEIVE_COMMISSION_BY_AGENT_CODE, Dictionary<string, object> parameters, Func<object, decimal> value);
     }
 }
 
