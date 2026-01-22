@@ -19,6 +19,7 @@
   <ItemGroup>
     <Folder Include="Models\Extensions\" />
     <Folder Include="Models\Entities\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

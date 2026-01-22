@@ -2,7 +2,7 @@
 using TeamChoice.WebApis.Domain.Processors;
 using TeamChoice.WebApis.Models.DTOs;
 
-namespace TeamChoice.WebApis.Services
+namespace TeamChoice.WebApis.Application.Services
 {
     public interface IAgentTransactionFacade
     {
