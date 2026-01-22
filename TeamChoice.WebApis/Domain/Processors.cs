@@ -1,4 +1,5 @@
 ﻿using TeamChoice.WebApis.Application.Orchestrators;
+using TeamChoice.WebApis.Models.DTOs;
 using TeamChoice.WebApis.Models.DTOs.Transactions;
 
 namespace TeamChoice.WebApis.Domain.Processors;
@@ -8,8 +9,7 @@ public interface ITransactionProcessor
     Task<TransactionOrchestrationResult> ProcessAsync(
         TransactionRequestDto request);
 
-    PartnerTransaction BuildPartnerTransaction(
-    TransactionRequestDto request);
+    PartnerTransaction BuildPartnerTransaction(TransactionRequestDto request);
 }
 
 /// <summary>
@@ -19,8 +19,7 @@ public sealed class TransactionProcessor : ITransactionProcessor
 {
     private const string StatusPending = "PENDING";
 
-    public PartnerTransaction BuildPartnerTransaction(
-        TransactionRequestDto request)
+    public PartnerTransaction BuildPartnerTransaction(TransactionRequestDto request)
     {
         // NOTE: Preserving Java behavior exactly
         var transactionDate = "2025-10-17T02:44:00Z";
