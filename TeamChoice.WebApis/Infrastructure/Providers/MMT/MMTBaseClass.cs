@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using TeamChoice.WebApis.Domain.Models;
 using TeamChoice.WebApis.Domain.Models.DTOs;
 
+namespace TeamChoice.WebApis.Infrastructure.Providers.MMT;
+
 public class MMTBaseClass
 {
     private readonly HttpClient _httpClient;

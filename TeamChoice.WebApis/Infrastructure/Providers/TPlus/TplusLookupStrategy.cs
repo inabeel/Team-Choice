@@ -1,6 +1,6 @@
-﻿using TeamChoice.WebApis.Domain.Models;
+﻿using TeamChoice.WebApis.Application.Interfaces;
+using TeamChoice.WebApis.Domain.Models;
 using TeamChoice.WebApis.Domain.Models.DTOs;
-using TeamChoice.WebApis.Infrastructure.Providers;
 
 namespace TeamChoice.WebApis.Infrastructure.Providers.TPlus;
 
