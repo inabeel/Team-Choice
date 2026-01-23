@@ -1,20 +1,16 @@
-﻿using TeamChoice.WebApis.Domain.Models;
+﻿using TeamChoice.WebApis.Application.Services;
+using TeamChoice.WebApis.Domain.Models;
 using TeamChoice.WebApis.Domain.Models.DTOs;
 
-namespace TeamChoice.WebApis.Application.Services;
-
-public interface ITplusLookupService
-{
-    Task<ServiceLookupResponse> LookupAsync(AccountsLookupRequest request);
-}
+namespace TeamChoice.WebApis.Infrastructure.Providers.TPlus;
 
 public sealed class TplusLookupService : ITplusLookupService
 {
-    private readonly HttpClient _httpClient; // kept for parity if later needed
+    //private readonly HttpClient _httpClient; // kept for parity if later needed
 
     public TplusLookupService(HttpClient httpClient)
     {
-        _httpClient = httpClient;
+        //_httpClient = httpClient;
     }
 
     public Task<ServiceLookupResponse> LookupAsync(AccountsLookupRequest request)
