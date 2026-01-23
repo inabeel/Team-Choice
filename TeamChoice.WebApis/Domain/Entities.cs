@@ -18,7 +18,7 @@ public class LocServiceEntity
 
     [Column("ServiceID")]
     public string? ServiceId { get; set; }
-
+    public string? ServiceID { get;  set; }
     [Column("ProviderName")]
     public string? ProviderName { get; set; }
 

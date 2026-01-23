@@ -2,12 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TeamChoice.WebApis.Application.Services.YourNamespace.Services;
+using TeamChoice.WebApis.Application.Services;
 using TeamChoice.WebApis.Models.DTOs;
 using TeamChoice.WebApis.Utils;
 using YourNamespace.Repositories;
 
-namespace TeamChoice.WebApis.Infrastructure
+namespace TeamChoice.WebApis.Infrastructure.Repositories
 {
     public class AgentRepository : IAgentRepository
     {

@@ -19,11 +19,15 @@ public record TransactionRequestDto
     public PersonDto Recipient { get; init; } = default!;
     public LocationDto SendingLocation { get; init; } = default!;
     public LocationDto? PayeeLocation { get; init; }
+    public string? TawakalTxnRef { get;  set; }
 }
 
 public record TransactionStatusRequestDto(
     string TransactionReference
-);
+)
+{
+    public string? TawakalTxnRef { get;  set; }
+}
 
 public record CancelTransactionRequestDto(
     string TawakalTxnRef,
@@ -103,5 +107,6 @@ public class AccountsLookupRequest
     /// </summary>
     /// <example>MPESA</example>
     public string? PaymentMode { get; set; }
+    public string? ServiceMode { get;  set; }
 }
 

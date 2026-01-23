@@ -1,4 +1,4 @@
-﻿using TeamChoice.WebApis.Application.Services.YourNamespace.Services;
+﻿
 using TeamChoice.WebApis.Models.DTOs;
 using TeamChoice.WebApis.Utils;
 

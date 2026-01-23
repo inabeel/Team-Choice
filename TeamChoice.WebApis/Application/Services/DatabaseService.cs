@@ -1,100 +1,104 @@
-﻿namespace TeamChoice.WebApis.Application.Services
+﻿using System.Data;
+using System.Data.SqlClient;
+
+namespace TeamChoice.WebApis.Application.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Data.SqlClient;
-    using System.Threading.Tasks;
-    using Microsoft.Extensions.Configuration;
 
-    namespace YourNamespace.Services
+    public interface IDatabaseService
     {
-        public class DatabaseService : IDatabaseService
+        Task<T> QueryOneAsync<T>(string sql, Dictionary<string, object> parameters, Func<IDataReader, T> mapper);
+        Task<IEnumerable<T>> QueryAsync<T>(string sql, Dictionary<string, object> parameters, Func<IDataReader, T> mapper);
+        Task<long> ExecuteNonQueryAsync(string sql, Dictionary<string, object> parameters);
+        Task<T> ExecuteStoredProcedureAsync<T>(string procedureName, Dictionary<string, object> parameters, Func<IDataReader, T> mapper);
+    }
+
+    public class DatabaseService : IDatabaseService
+    {
+        private readonly string _connectionString;
+
+        public DatabaseService(IConfiguration configuration)
         {
-            private readonly string _connectionString;
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
+        }
 
-            public DatabaseService(IConfiguration configuration)
+        public async Task<T> QueryOneAsync<T>(string sql, Dictionary<string, object> parameters, Func<IDataReader, T> mapper)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand(sql, connection))
             {
-                _connectionString = configuration.GetConnectionString("DefaultConnection");
-            }
-
-            public async Task<T> QueryOneAsync<T>(string sql, Dictionary<string, object> parameters, Func<IDataReader, T> mapper)
-            {
-                
-                using (var connection = new SqlConnection(_connectionString))
-                using (var command = new SqlCommand(sql, connection))
+                AddParameters(command, parameters);
+                await connection.OpenAsync();
+                using (var reader = await command.ExecuteReaderAsync(CommandBehavior.SingleRow))
                 {
-                    if (parameters != null)
+                    if (await reader.ReadAsync())
                     {
-                        foreach (var param in parameters)
-                        {
-                            command.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
-                        }
-                    }
-
-                    await connection.OpenAsync();
-                    using (var reader = await command.ExecuteReaderAsync(CommandBehavior.SingleRow))
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            return mapper(reader);
-                        }
+                        return mapper(reader);
                     }
                 }
-                return default;
             }
+            return default;
+        }
 
-            public async Task<long> ExecuteNonQueryAsync(string sql, Dictionary<string, object> parameters)
+        public async Task<IEnumerable<T>> QueryAsync<T>(string sql, Dictionary<string, object> parameters, Func<IDataReader, T> mapper)
+        {
+            var list = new List<T>();
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand(sql, connection))
             {
-                using (var connection = new SqlConnection(_connectionString))
-                using (var command = new SqlCommand(sql, connection))
+                AddParameters(command, parameters);
+                await connection.OpenAsync();
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    if (parameters != null)
+                    while (await reader.ReadAsync())
                     {
-                        foreach (var param in parameters)
-                        {
-                            command.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
-                        }
+                        list.Add(mapper(reader));
                     }
-
-                    await connection.OpenAsync();
-                    return await command.ExecuteNonQueryAsync();
                 }
             }
+            return list;
+        }
 
-            public async Task<T> ExecuteStoredProcedureAsync<T>(string procedureName, Dictionary<string, object> parameters, Func<IDataReader, T> mapper)
+        public async Task<long> ExecuteNonQueryAsync(string sql, Dictionary<string, object> parameters)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand(sql, connection))
             {
-                using (var connection = new SqlConnection(_connectionString))
-                using (var command = new SqlCommand(procedureName, connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    if (parameters != null)
-                    {
-                        foreach (var param in parameters)
-                        {
-                            command.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
-                        }
-                    }
-
-                    await connection.OpenAsync();
-                    using (var reader = await command.ExecuteReaderAsync(CommandBehavior.SingleRow))
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            return mapper(reader);
-                        }
-                    }
-                }
-                return default;
+                AddParameters(command, parameters);
+                await connection.OpenAsync();
+                return await command.ExecuteNonQueryAsync();
             }
         }
 
-        public interface IDatabaseService
+        public async Task<T> ExecuteStoredProcedureAsync<T>(string procedureName, Dictionary<string, object> parameters, Func<IDataReader, T> mapper)
         {
-            Task<T> QueryOneAsync<T>(string sql, Dictionary<string, object> parameters, Func<IDataReader, T> mapper);
-            Task<long> ExecuteNonQueryAsync(string sql, Dictionary<string, object> parameters);
-            Task<T> ExecuteStoredProcedureAsync<T>(string procedureName, Dictionary<string, object> parameters, Func<IDataReader, T> mapper);
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand(procedureName, connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                AddParameters(command, parameters);
+                await connection.OpenAsync();
+                using (var reader = await command.ExecuteReaderAsync(CommandBehavior.SingleRow))
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        return mapper(reader);
+                    }
+                }
+            }
+            return default;
+        }
+
+        private void AddParameters(SqlCommand command, Dictionary<string, object> parameters)
+        {
+            if (parameters != null)
+            {
+                foreach (var param in parameters)
+                {
+                    command.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                }
+            }
         }
     }
 }
+
+
