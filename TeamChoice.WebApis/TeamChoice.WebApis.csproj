@@ -17,10 +17,4 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Extensions\" />
-    <Folder Include="Models\Entities\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>
