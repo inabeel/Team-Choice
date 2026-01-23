@@ -1,29 +1,27 @@
-﻿using TeamChoice.WebApis.Models.DTOs;
+﻿using TeamChoice.WebApis.Domain.Models;
 
-namespace TeamChoice.WebApis.Application.Services
+namespace TeamChoice.WebApis.Application.Services;
+
+public interface ILookupService
 {
-    public interface ILookupService
+    Task<ServiceLookupResponse> LookupAsync(string phoneNumber, string serviceCode);
+}
+
+public class LookupService : ILookupService
+{
+    private readonly IProviderRouter _providerRouter;
+
+    public LookupService(IProviderRouter providerRouter)
     {
-        Task<ServiceLookupResponse> LookupAsync(string phoneNumber, string serviceCode);
+        _providerRouter = providerRouter;
     }
 
-    public class LookupService : ILookupService
+    public async Task<ServiceLookupResponse> LookupAsync(string phoneNumber, string serviceCode)
     {
-        private readonly IProviderRouter _providerRouter;
+        // Resolve the strategy based on service code
+        var strategy = _providerRouter.Resolve(serviceCode);
 
-        public LookupService(IProviderRouter providerRouter)
-        {
-            _providerRouter = providerRouter;
-        }
-
-        public async Task<ServiceLookupResponse> LookupAsync(string phoneNumber, string serviceCode)
-        {
-            // Resolve the strategy based on service code
-            var strategy = _providerRouter.Resolve(serviceCode);
-
-            // Execute the lookup on the resolved strategy
-            return await strategy.LookupAsync(phoneNumber, serviceCode);
-        }
+        // Execute the lookup on the resolved strategy
+        return await strategy.LookupAsync(phoneNumber, serviceCode);
     }
-
 }

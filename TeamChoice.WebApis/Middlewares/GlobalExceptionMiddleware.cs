@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using TeamChoice.WebApis.Domain.Exceptions;
-using TeamChoice.WebApis.Models.DTOs.HttpResponse;
+using TeamChoice.WebApis.Domain.Models.DTOs;
 
 namespace TeamChoice.WebApis.Middlewares;
 

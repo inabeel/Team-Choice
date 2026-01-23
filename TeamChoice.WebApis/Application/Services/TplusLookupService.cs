@@ -1,5 +1,5 @@
 ﻿using TeamChoice.WebApis.Domain.Models;
-using TeamChoice.WebApis.Models.DTOs.Transactions;
+using TeamChoice.WebApis.Domain.Models.DTOs;
 
 namespace TeamChoice.WebApis.Application.Services;
 
@@ -63,4 +63,3 @@ public sealed class TplusLookupService : ITplusLookupService
         return Task.FromResult(response);
     }
 }
-

@@ -1,57 +1,55 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using TeamChoice.WebApis.Models;
-using TeamChoice.WebApis.Application.Services;
-using TeamChoice.WebApis.Models.DTOs.Transactions;
-using System.Net; // Added to likely resolve ApiResponse if moved there
+using System.Net;
+using TeamChoice.WebApis.Application.Facades; // Added to likely resolve ApiResponse if moved there
+using TeamChoice.WebApis.Domain.Models;
+using TeamChoice.WebApis.Domain.Models.DTOs;
 
-namespace YourNamespace.Controllers
+namespace TeamChoice.WebApis.Controllers;
+
+[ApiController]
+[Route("api/v1/transaction/status")]
+public class ValidationController : ControllerBase
 {
-    [ApiController]
-    [Route("api/v1/transaction/status")]
-    public class ValidationController : ControllerBase
+    private readonly IAgentTransactionFacade _agentTransactionFacade;
+    private readonly ILogger<ValidationController> _logger;
+
+    public ValidationController(IAgentTransactionFacade agentTransactionFacade, ILogger<ValidationController> logger)
     {
-        private readonly IAgentTransactionFacade _agentTransactionFacade;
-        private readonly ILogger<ValidationController> _logger;
+        _agentTransactionFacade = agentTransactionFacade;
+        _logger = logger;
+    }
 
-        public ValidationController(IAgentTransactionFacade agentTransactionFacade, ILogger<ValidationController> logger)
+    [HttpPost]
+    public async Task<IActionResult> ValidateTransactionStatus([FromBody] TransactionStatusRequestDto request)
+    {
+        _logger.LogInformation("🔍 Validating status for transactionReference: {Ref}", request.TawakalTxnRef);
+
+        try
         {
-            _agentTransactionFacade = agentTransactionFacade;
-            _logger = logger;
+            var status = await _agentTransactionFacade.ValidateTransactionStatusAsync(request.TawakalTxnRef);
+            return Respond((int)HttpStatusCode.OK, "Transaction status retrieved successfully", status);
         }
-
-        [HttpPost]
-        public async Task<IActionResult> ValidateTransactionStatus([FromBody] TransactionStatusRequestDto request)
+        catch (Exception error)
         {
-            _logger.LogInformation("🔍 Validating status for transactionReference: {Ref}", request.TawakalTxnRef);
+            _logger.LogError(error, "❌ Failed to validate transaction status for {Ref}: {Message}", request.TawakalTxnRef, error.Message);
+            // Depending on requirements, might want to return 500 or 400 here
+            return StatusCode(500); 
+        }
+    }
 
-            try
+    private IActionResult Respond(int statusCode, string message, string txnStatus)
+    {
+        var response = new ApiResponse
+        {
+            TimeStamp = DateTime.Now.ToString(),
+            Status = statusCode == 200 ? "OK" : "ERROR",
+            StatusCode = statusCode,
+            Data = new TransactionResult
             {
-                var status = await _agentTransactionFacade.ValidateTransactionStatusAsync(request.TawakalTxnRef);
-                return Respond((int)HttpStatusCode.OK, "Transaction status retrieved successfully", status);
+                Status = txnStatus,
+                Message = message
             }
-            catch (Exception error)
-            {
-                _logger.LogError(error, "❌ Failed to validate transaction status for {Ref}: {Message}", request.TawakalTxnRef, error.Message);
-                // Depending on requirements, might want to return 500 or 400 here
-                return StatusCode(500); 
-            }
-        }
-
-        private IActionResult Respond(int statusCode, string message, string txnStatus)
-        {
-            var response = new ApiResponse
-            {
-                TimeStamp = DateTime.Now.ToString(),
-                Status = statusCode == 200 ? "OK" : "ERROR",
-                StatusCode = statusCode,
-                Data = new TransactionResult
-                {
-                    Status = txnStatus,
-                    Message = message
-                }
-            };
-            return StatusCode(statusCode, response);
-        }
+        };
+        return StatusCode(statusCode, response);
     }
 }

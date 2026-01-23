@@ -1,5 +1,5 @@
 ﻿
-using TeamChoice.WebApis.Models.DTOs;
+using TeamChoice.WebApis.Domain.Models.DTOs;
 using TeamChoice.WebApis.Utils;
 
 namespace TeamChoice.WebApis.Application.Services

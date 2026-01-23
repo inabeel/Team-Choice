@@ -1,18 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using TeamChoice.WebApis.Application.Services;
-using TeamChoice.WebApis.Models.DTOs;
+﻿using TeamChoice.WebApis.Application.Services;
+using TeamChoice.WebApis.Domain.Models.DTOs;
 using TeamChoice.WebApis.Utils;
 using YourNamespace.Repositories;
 
-namespace TeamChoice.WebApis.Infrastructure.Repositories
+namespace TeamChoice.WebApis.Infrastructure.Repositories;
+
+public class AgentRepository : IAgentRepository
 {
-    public class AgentRepository : IAgentRepository
-    {
-        private readonly IDatabaseService _databaseService; // Use the new service
-        private readonly ILogger<AgentRepository> _logger;
+    private readonly IDatabaseService _databaseService; // Use the new service
+    private readonly ILogger<AgentRepository> _logger;
 
     public AgentRepository(IDatabaseService databaseService, ILogger<AgentRepository> logger)
     {
@@ -55,11 +51,11 @@ namespace TeamChoice.WebApis.Infrastructure.Repositories
     public async Task<ExchangeRateResult> GetExchangeRateAsync(ExchangeRateQuery query)
     {
         var parameters = new Dictionary<string, object>
-        {
-            { "@curcode", query.CurCode },
-            { "@agtcode", query.AgtCode },
-            { "@loccode", query.LocCode }
-        };
+    {
+        { "@curcode", query.CurCode },
+        { "@agtcode", query.AgtCode },
+        { "@loccode", query.LocCode }
+    };
 
         return await _databaseService.QueryOneAsync(
             AgentSqlQueries.GET_EXCHANGE_RATE,
@@ -132,13 +128,13 @@ namespace TeamChoice.WebApis.Infrastructure.Repositories
     public async Task<long> InsertPartnerTransactionAsync(PartnerTransaction p)
     {
         var parameters = new Dictionary<string, object>
-        {
-            { "@partnerReference", p.PartnerReference },
-            { "@transactionDate", p.TransactionDate },
-            { "@status", p.Status },
-            { "@payload", p.Payload },
-            { "@partnerCode", p.PartnerCode }
-        };
+    {
+        { "@partnerReference", p.PartnerReference },
+        { "@transactionDate", p.TransactionDate },
+        { "@status", p.Status },
+        { "@payload", p.Payload },
+        { "@partnerCode", p.PartnerCode }
+    };
 
         return await _databaseService.ExecuteNonQueryAsync(AgentSqlQueries.INSERT_PARTNER_TRANSACTION, parameters);
     }
@@ -146,10 +142,10 @@ namespace TeamChoice.WebApis.Infrastructure.Repositories
     public async Task<long> UpdateAfterPayingTransactionAsync(string trnsCode, string newStatus)
     {
         var parameters = new Dictionary<string, object>
-        {
-            { "@trnsStatus", newStatus },
-            { "@agtRefNo", trnsCode }
-        };
+    {
+        { "@trnsStatus", newStatus },
+        { "@agtRefNo", trnsCode }
+    };
 
         return await _databaseService.ExecuteNonQueryAsync(AgentSqlQueries.UPDATE_TRANSACTION_STATUS, parameters);
     }

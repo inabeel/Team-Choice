@@ -1,6 +1,5 @@
-﻿using TeamChoice.WebApis.Domain.Processors;
-using TeamChoice.WebApis.Domain.Validation;
-using TeamChoice.WebApis.Models.DTOs.Transactions;
+﻿using TeamChoice.WebApis.Application.Validators;
+using TeamChoice.WebApis.Domain.Models.DTOs;
 
 namespace TeamChoice.WebApis.Application.Orchestrators;
 

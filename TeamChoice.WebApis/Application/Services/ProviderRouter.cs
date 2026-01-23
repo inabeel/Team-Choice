@@ -1,4 +1,4 @@
-﻿using TeamChoice.WebApis.Providers;
+﻿using TeamChoice.WebApis.Infrastructure.Providers;
 
 namespace TeamChoice.WebApis.Application.Services
 {

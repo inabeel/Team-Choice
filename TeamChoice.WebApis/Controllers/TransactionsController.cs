@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using TeamChoice.WebApis.Models.DTOs.HttpResponse;
-using TeamChoice.WebApis.Models.DTOs.Transactions;
+﻿using Microsoft.AspNetCore.Mvc;
+using TeamChoice.WebApis.Domain.Models.DTOs;
 
 namespace TeamChoice.WebApis.Controllers;
 

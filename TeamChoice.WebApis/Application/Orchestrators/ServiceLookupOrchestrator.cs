@@ -1,6 +1,6 @@
-﻿using TeamChoice.WebApis.Domain.Policies;
+﻿using TeamChoice.WebApis.Application.Policies;
+using TeamChoice.WebApis.Domain.Models.DTOs;
 using TeamChoice.WebApis.Infrastructure.Clients;
-using TeamChoice.WebApis.Models.DTOs.Services;
 
 namespace TeamChoice.WebApis.Application.Orchestrators;
 
