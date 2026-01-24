@@ -25,7 +25,7 @@ public class RateRequestController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> GetExchangeRate([FromBody] ExchangePayload payload)
+    public async Task<IActionResult> GetExchangeRate([FromBody] ExchangePayloadDto payload)
     {
         _logger.LogInformation("📥 Received exchange rate request: {@Payload}", payload);
 
@@ -46,37 +46,17 @@ public class RateRequestController : ControllerBase
         }
     }
 
-    //[HttpPost("exchange-rate")]
-    //public async Task<IActionResult> GetRate([FromBody] ExchangePayload payload)
-    //{
-    //    _logger.LogInformation("📥 Received external partner exchange rate request: {@Payload}", payload);
-
-    //    try
-    //    {
-    //        var rateResponse = await _rateRepository.CalculateExternalPartnerCommissionAsync(payload);
-    //        var response = BuildExchangeResponse(rateResponse, payload);
-
-    //        _logger.LogInformation("✅ Commission rate processed successfully");
-    //        return Ok(response);
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        _logger.LogError(e, "❌ Failed to process commission rate");
-    //        return StatusCode(500);
-    //    }
-    //}
-
-    private ExchangeRateQuery BuildQueryFromPayload(ExchangePayload payload)
+    private ExchangeRateQueryDto BuildQueryFromPayload(ExchangePayloadDto payload)
     {
-        return new ExchangeRateQuery
+        return new ExchangeRateQueryDto
         {
-            AgtCode = RateConstants.DEFAULT_AGENT_CODE,
-            LocCode = RateConstants.DEFAULT_LOCATION_CODE,
-            CurCode = RateConstants.DEFAULT_CURRENCY_CODE
+            AgentCode = RateConstants.DEFAULT_AGENT_CODE,
+            LocationCode = RateConstants.DEFAULT_LOCATION_CODE,
+            CurrencyCode = RateConstants.DEFAULT_CURRENCY_CODE
         };
     }
 
-    private ExchangeRateResponse TransformRateResponse(ExchangeRateResponse rateResponse, ExchangePayload payload)
+    private ExchangeRateResponse TransformRateResponse(ExchangeRateResponse rateResponse, ExchangePayloadDto payload)
     {
         var payer = rateResponse.ExchangeDetails.Payer;
         var recipient = rateResponse.ExchangeDetails.Recipient;
@@ -97,7 +77,7 @@ public class RateRequestController : ControllerBase
         return rateResponse;
     }
 
-    private ExchangeRateResponse BuildExchangeResponse(CommissionResultDTO rateResponse, ExchangePayload payload)
+    private ExchangeRateResponse BuildExchangeResponse(CommissionResultDTO rateResponse, ExchangePayloadDto payload)
     {
         return new ExchangeRateResponse
         {
@@ -121,5 +101,5 @@ public class RateRequestController : ControllerBase
             }
         };
     }
-   
+
 }

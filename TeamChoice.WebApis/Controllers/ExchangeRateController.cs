@@ -1,31 +1,46 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using TeamChoice.WebApis.Application.Orchestrators;
 using TeamChoice.WebApis.Domain.Models.DTOs;
 
 namespace TeamChoice.WebApis.Controllers;
 
-[ApiController]
 [Route("api/v1/rate")]
-[Authorize]
-public class ExchangeRateController : Controller
+[SwaggerTag("Exchange rate endpoints")]
+public class ExchangeRateController : BaseApiController
 {
-    [HttpPost("exchange-rate")]
-    public ActionResult<HttpResponseDto<ExchangeResponseBuilderDto>> GetExternalExchangeRate(
-        [FromBody] ExchangePayloadDto request)
-    {
-        // TODO: call service layer
-        var response = new ExchangeResponseBuilderDto
-        {
-            Timestamp = DateTime.UtcNow,
-            StatusCode = 200,
-            StatusMessage = "SUCCESS"
-        };
+    private readonly IRateOrchestrator _rateOrchestrator;
 
-        return Ok(new HttpResponseDto<ExchangeResponseBuilderDto>
-        {
-            StatusCode = 200,
-            Status = "OK",
-            Data = response
-        });
+    public ExchangeRateController(IRateOrchestrator rateOrchestrator)
+    {
+        _rateOrchestrator = rateOrchestrator;
+    }
+
+    [HttpPost]
+    [SwaggerOperation(
+        Summary = "Get internal exchange rate",
+        Description = "Computes and returns internal exchange rate details for a given payload",
+        OperationId = "getInternalExchangeRate",
+        Tags = new[] { "transactions" })]
+
+    [ProducesResponseType(typeof(HttpResponseDto<ExchangeRateResponseDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetExchangeRate([FromBody] ExchangeRatePayloadDto payload)
+    {
+        var result = await _rateOrchestrator.GetInternalRateAsync(payload);
+        return OkResponse(result);
+    }
+
+    [HttpPost("exchange-rate")]
+    [SwaggerOperation(
+         Summary = "Get external partner exchange rate",
+         Description = "Returns computed exchange rate and fees for an external partner request",
+         OperationId = "getExternalExchangeRate",
+         Tags = new[] { "transactions" })]
+
+    [ProducesResponseType(typeof(HttpResponseDto<ExchangeResponseBuilderDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetExternalExchangeRate([FromBody] ExchangePayloadDto payload)
+    {
+        var result = await _rateOrchestrator.GetExternalRateAsync(payload);
+        return OkResponse(result);
     }
 }

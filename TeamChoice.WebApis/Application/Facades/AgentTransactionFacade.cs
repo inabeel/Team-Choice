@@ -27,7 +27,7 @@ public interface IAgentTransactionFacade
     
     Task<long> UpdateAfterPayingTransactionAsync(string trnsCode, string newStatus);
     
-    Task<ExchangeRateResponse> GetExchangeRateAsync(ExchangeRateQuery exchangeRateQuery);
+    Task<ExchangeRateResponse> GetExchangeRateAsync(ExchangeRateQueryDto exchangeRateQuery);
     
     Task<int> GetLocIdForCashPickupServiceAsync(string serviceCode);
 }
@@ -132,7 +132,7 @@ public class AgentTransactionFacade : IAgentTransactionFacade
         return await _agentRepository.UpdateAfterPayingTransactionAsync(trnsCode, newStatus);
     }
 
-    public async Task<ExchangeRateResponse> GetExchangeRateAsync(ExchangeRateQuery exchangeRateQuery)
+    public async Task<ExchangeRateResponse> GetExchangeRateAsync(ExchangeRateQueryDto exchangeRateQuery)
     {
         _logger.LogDebug("💱 Fetching exchange rate for: {@Query}", exchangeRateQuery);
         var rate = await _agentRepository.GetExchangeRateAsync(exchangeRateQuery);

@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TeamChoice.WebApis.Application.Services;
-using TeamChoice.WebApis.Domain.Models;
 using TeamChoice.WebApis.Domain.Models.DTOs;
-
 
 namespace TeamChoice.WebApis.Controllers;
 
-[ApiController]
 [Route("api/v1/transaction")]
-public class AccountLookupController : ControllerBase
+public class AccountLookupController : BaseApiController
 {
     private readonly IAccountLookupService _accountLookupService;
     private readonly ILookupService _mLookupService;
@@ -29,17 +26,7 @@ public class AccountLookupController : ControllerBase
     {
         var data = await _mLookupService.LookupAsync(request.PhoneNumber, request.ServiceCode);
 
-        // Using standard Ok() with ApiResponse structure directly for simplicity, 
-        // or could use a helper method if strictly following CancelRequestController pattern.
-        var response = new ApiResponse
-        {
-            TimeStamp = DateTime.Now.ToString(),
-            Status = "OK",
-            StatusCode = 200,
-            Data = data
-        };
-
-        return Ok(response);
+        return OkResponse(data);
     }
 
     [HttpPost("account-lookup")]
@@ -47,54 +34,42 @@ public class AccountLookupController : ControllerBase
     {
         _logger.LogInformation("📥 Received account lookup request: {@Request}", request);
 
-        if (string.IsNullOrWhiteSpace(request.ServiceCode) || !"231404".Equals(request.ServiceCode, StringComparison.OrdinalIgnoreCase))
+        if (!IsValidServiceCode(request.ServiceCode))
         {
-            _logger.LogError("❌ Invalid service code: {Code}", request.ServiceCode);
-            return BadRequest(new ApiResponse
-            {
-                TimeStamp = DateTime.Now.ToString(),
-                Status = "BAD_REQUEST",
-                StatusCode = 400,
-                Data = new Dictionary<string, string> { { "error", "Invalid service code" } }
-            });
+            return BadRequestResponse("Invalid service code");
         }
 
-        if (string.IsNullOrWhiteSpace(request.ServiceMode) || !"1000594563248".Equals(request.ServiceMode, StringComparison.OrdinalIgnoreCase))
+        if (!IsValidAccountNumber(request.ServiceMode))
         {
-            _logger.LogError("❌ Invalid account number: {Code}", request.ServiceCode);
-            return BadRequest(new ApiResponse
-            {
-                TimeStamp = DateTime.Now.ToString(),
-                Status = "BAD_REQUEST",
-                StatusCode = 400,
-                Data = new Dictionary<string, string> { { "error", "Invalid account number" } }
-            });
+            return BadRequestResponse("Invalid account number");
         }
 
         try
         {
-            var resp = await _accountLookupService.LookupAccountAsync(request);
-            _logger.LogInformation("✅ Account lookup response: {@Resp}", resp);
+            var response = await _accountLookupService.LookupAccountAsync(request);
 
-            return Ok(new ApiResponse
-            {
-                TimeStamp = DateTime.Now.ToString(),
-                Data = resp,
-                Status = "OK",
-                StatusCode = 200,
-                Message = "Account lookup successful"
-            });
+            _logger.LogInformation("✅ Account lookup successful");
+
+            return OkResponse(response, "Account lookup successful");
         }
-        catch (Exception error)
+        catch (Exception ex)
         {
-            _logger.LogError("❌ Error during account lookup: {Message}", error.Message);
-            return StatusCode(500, new ApiResponse
-            {
-                TimeStamp = DateTime.Now.ToString(),
-                Status = "INTERNAL_SERVER_ERROR",
-                StatusCode = 500,
-                Message = "Account lookup failed: " + error.Message
-            });
+            _logger.LogError(ex, "❌ Account lookup failed");
+
+            return InternalServerErrorResponse(
+                "Account lookup failed",
+                ex.Message);
         }
     }
+
+    // --------------------------------------------------------------------
+    // Helpers
+    // --------------------------------------------------------------------
+    private static bool IsValidServiceCode(string? serviceCode) =>
+        !string.IsNullOrWhiteSpace(serviceCode) &&
+        serviceCode.Equals("231404", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsValidAccountNumber(string? serviceMode) =>
+        !string.IsNullOrWhiteSpace(serviceMode) &&
+        serviceMode.Equals("1000594563248", StringComparison.OrdinalIgnoreCase);
 }

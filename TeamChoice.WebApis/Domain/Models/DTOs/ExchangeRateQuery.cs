@@ -45,11 +45,11 @@ namespace TeamChoice.WebApis.Domain.Models.DTOs
         public decimal Usd { get; set; }
     }
 
-    public class ExchangeRateQuery
+    public sealed class ExchangeRateQueryDto
     {
-        public string CurCode { get; set; }
-        public string AgtCode { get; set; }
-        public string LocCode { get; set; }
+        public string AgentCode { get; init; } = default!;
+        public string LocationCode { get; init; } = default!;
+        public string CurrencyCode { get; init; } = default!;
     }
 
     public sealed class PartnerTransaction
@@ -203,7 +203,7 @@ namespace YourNamespace.Repositories
         Task<string> ValidateTransactionStatusAsync(string authNumber);
         Task<long> InsertPartnerTransactionAsync(PartnerTransaction partnerTransaction);
         Task<long> UpdateAfterPayingTransactionAsync(string trnsCode, string newStatus);
-        Task<ExchangeRateResult> GetExchangeRateAsync(ExchangeRateQuery query);
+        Task<ExchangeRateResult> GetExchangeRateAsync(ExchangeRateQueryDto query);
         Task<int?> GetLocIdForServiceCodeAsync(string serviceCode);
     }
 

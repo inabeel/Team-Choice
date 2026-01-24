@@ -25,4 +25,30 @@ public abstract class BaseApiController : ControllerBase
             Data = data
         });
     }
+
+    protected IActionResult BadRequestResponse(string message)
+    {
+        return BadRequest(new HttpResponseDto<object>
+        {
+            TimeStamp = DateTime.UtcNow,
+            StatusCode = StatusCodes.Status400BadRequest,
+            Status = "BAD_REQUEST",
+            Message = message
+        });
+    }
+
+    protected IActionResult InternalServerErrorResponse(
+        string message,
+        string? developerMessage = null)
+    {
+        return StatusCode(StatusCodes.Status500InternalServerError,
+            new HttpResponseDto<object>
+            {
+                TimeStamp = DateTime.UtcNow,
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Status = "ERROR",
+                Message = message,
+                DeveloperMessage = developerMessage
+            });
+    }
 }
