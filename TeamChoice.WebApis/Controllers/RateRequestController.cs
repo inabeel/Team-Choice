@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TeamChoice.WebApis.Application.Facades;
+using TeamChoice.WebApis.Domain.Constants;
 using TeamChoice.WebApis.Domain.Models.DTOs;
 using TeamChoice.WebApis.Infrastructure.Repositories;
 
@@ -122,11 +122,4 @@ public class RateRequestController : ControllerBase
         };
     }
    
-}
-public class RateConstants
-{
-    public const string DEFAULT_AGENT_CODE = "AGT001";
-    public const string DEFAULT_LOCATION_CODE = "LOC001";
-    public const string DEFAULT_CURRENCY_CODE = "USD";
-    public const decimal TRANSACTION_FEE_PERCENT = 0.02M; // 2% fee
 }

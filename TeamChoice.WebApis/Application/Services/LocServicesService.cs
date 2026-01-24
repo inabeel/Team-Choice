@@ -2,32 +2,32 @@
 using TeamChoice.WebApis.Infrastructure.Repositories;
 using TeamChoice.WebApis.Utils;
 
-namespace TeamChoice.WebApis.Application.Services
+namespace TeamChoice.WebApis.Application.Services;
+
+public interface ILocServicesService
 {
-    public interface ILocServicesService
+    Task<IEnumerable<LocServiceRes>> GetByLocIdAsync(string locId);
+}
+
+public class LocServicesService : ILocServicesService
+{
+    private readonly ILocServiceRepository _locServiceRepo;
+
+    public LocServicesService(ILocServiceRepository locServiceRepo)
     {
-        Task<IEnumerable<LocServiceRes>> GetByLocIdAsync(string locId);
+        _locServiceRepo = locServiceRepo;
     }
-    public class LocServicesService : ILocServicesService
+
+    public async Task<IEnumerable<LocServiceRes>> GetByLocIdAsync(string locId)
     {
-        private readonly ILocServiceRepository _locServiceRepo;
+        var services = await _locServiceRepo.FindByLocIdAsync(locId);
 
-        public LocServicesService(ILocServiceRepository locServiceRepo)
+        if (services == null || !services.Any())
         {
-            _locServiceRepo = locServiceRepo;
+            throw new KeyNotFoundException($"No services found for location: {locId}");
         }
 
-        public async Task<IEnumerable<LocServiceRes>> GetByLocIdAsync(string locId)
-        {
-            var services = await _locServiceRepo.FindByLocIdAsync(locId);
-
-            if (services == null || !services.Any())
-            {
-                throw new KeyNotFoundException($"No services found for location: {locId}");
-            }
-
-            // Mapping entities to DTOs
-            return services.Select(LocServiceMapper.ToResponse);
-        }
+        // Mapping entities to DTOs
+        return services.Select(LocServiceMapper.ToResponse);
     }
 }
