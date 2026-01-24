@@ -94,12 +94,14 @@ public class AccountsLookupRequest
     /// Service code
     /// </summary>
     /// <example>00014</example>
+    [Required]
     public string ServiceCode { get; set; } = default!;
 
     /// <summary>
     /// Phone number in E.164 format
     /// </summary>
     /// <example>+254790715176</example>
+    [Required]
     public string PhoneNumber { get; set; } = default!;
 
     /// <summary>
@@ -107,6 +109,7 @@ public class AccountsLookupRequest
     /// </summary>
     /// <example>MPESA</example>
     public string? PaymentMode { get; set; }
+
     public string? ServiceMode { get;  set; }
 }
 

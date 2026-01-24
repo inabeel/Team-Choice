@@ -24,3 +24,14 @@ public sealed class NotFoundException : Exception
 {
     public NotFoundException(string message) : base(message) { }
 }
+
+/// <summary>
+/// Thrown when a transaction reference cannot be found in the system.
+/// </summary>
+public sealed class TransactionNotFoundException : Exception
+{
+    public TransactionNotFoundException(string transactionReference)
+        : base($"Transaction not found: {transactionReference}")
+    {
+    }
+}

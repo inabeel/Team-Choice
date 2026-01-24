@@ -1,59 +1,73 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using TeamChoice.WebApis.Application.Facades;
+using TeamChoice.WebApis.Application.Orchestrators;
 using TeamChoice.WebApis.Domain.Models.DTOs;
 
 namespace TeamChoice.WebApis.Controllers;
 
-[ApiController]
 [Route("api/v1/transaction")]
-//[Authorize]
-public class TransactionsController : ControllerBase
+public class TransactionsController : BaseApiController
 {
-    [HttpPost]
-    public ActionResult<HttpResponseDto<TransactionResultDto>> CreateTransaction(
-        [FromBody] TransactionRequestDto request)
+    private readonly ITransactionOrchestrator _transactionOrchestrator;
+    private readonly ICancellationOrchestrator _cancellationOrchestrator;
+    private readonly ITransactionValidationFacade _transactionValidationFacade;
+
+    public TransactionsController(
+        ITransactionOrchestrator transactionOrchestrator, 
+        ICancellationOrchestrator cancellationOrchestrator,
+        ITransactionValidationFacade transactionValidationFacade)
     {
+        _transactionOrchestrator = transactionOrchestrator;
+        _cancellationOrchestrator = cancellationOrchestrator;
+        _transactionValidationFacade = transactionValidationFacade;
+    }
+
+    [SwaggerOperation(
+    Summary = "Create transaction",
+    Description = "Accepts a transaction request and initiates processing. Returns a pending reference when accepted.",
+    OperationId = "createTransaction",
+    Tags = new[] { "transactions" })]
+
+    [HttpPost]
+    [ProducesResponseType(typeof(HttpResponseDto<TransactionResultDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateTransactionAsync([FromBody] TransactionRequestDto request)
+    {
+        // 1️⃣ Call orchestrator (validation + processing happen inside)
+        var orchestrationResult =
+            await _transactionOrchestrator.ExecuteAsync(request);
+
         // TODO: transaction processing
         var result = new TransactionResultDto
         {
             Status = "Pending",
-            TawakalTxnRef = "TWK-REF-001234"
+            TawakalTxnRef = orchestrationResult.Reference
         };
 
-        return Ok(new HttpResponseDto<TransactionResultDto>
-        {
-            StatusCode = 200,
-            Status = "OK",
-            Data = result
-        });
+        return OkResponse(result);
     }
 
     [HttpPost("status")]
-    public ActionResult<HttpResponseDto<TransactionResultDto>> ValidateTransactionStatus(
-        [FromBody] TransactionStatusRequestDto request)
+    [ProducesResponseType(typeof(HttpResponseDto<TransactionResultDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ValidateTransactionStatusAsync([FromBody] TransactionStatusRequestDto request)
     {
-        // TODO: status validation
-        return Ok(new HttpResponseDto<TransactionResultDto>
-        {
-            StatusCode = 200,
-            Status = "OK",
-            Data = new TransactionResultDto
-            {
-                Status = "Completed",
-                TawakalTxnRef = request.TransactionReference
-            }
-        });
+        var response = await _transactionValidationFacade.ValidateAsync(request);
+        return OkResponse(response);
     }
 
     [HttpPost("cancel")]
-    public ActionResult<HttpResponseDto<object>> CancelTransaction(
-        [FromBody] CancelTransactionRequestDto request)
+    [SwaggerOperation(
+        Summary = "Cancel transaction",
+        Description = "Attempts to cancel a transaction if it is still in a cancellable state",
+        OperationId = "cancelTransaction",
+        Tags = new[] { "transactions" }
+    )]
+
+    [ProducesResponseType(typeof(HttpResponseDto<TransactionResultDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Cancel([FromBody] CancelTransactionDto request)
     {
-        // TODO: cancellation logic
-        return Ok(new HttpResponseDto<object>
-        {
-            StatusCode = 200,
-            Status = "OK",
-            Message = "Transaction cancelled successfully"
-        });
+        var result = await _cancellationOrchestrator.ExecuteAsync(request);
+
+        return OkResponse(result);
     }
 }

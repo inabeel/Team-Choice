@@ -46,25 +46,25 @@ public class RateRequestController : ControllerBase
         }
     }
 
-    [HttpPost("exchange-rate")]
-    public async Task<IActionResult> GetRate([FromBody] ExchangePayload payload)
-    {
-        _logger.LogInformation("📥 Received external partner exchange rate request: {@Payload}", payload);
+    //[HttpPost("exchange-rate")]
+    //public async Task<IActionResult> GetRate([FromBody] ExchangePayload payload)
+    //{
+    //    _logger.LogInformation("📥 Received external partner exchange rate request: {@Payload}", payload);
 
-        try
-        {
-            var rateResponse = await _rateRepository.CalculateExternalPartnerCommissionAsync(payload);
-            var response = BuildExchangeResponse(rateResponse, payload);
+    //    try
+    //    {
+    //        var rateResponse = await _rateRepository.CalculateExternalPartnerCommissionAsync(payload);
+    //        var response = BuildExchangeResponse(rateResponse, payload);
 
-            _logger.LogInformation("✅ Commission rate processed successfully");
-            return Ok(response);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "❌ Failed to process commission rate");
-            return StatusCode(500);
-        }
-    }
+    //        _logger.LogInformation("✅ Commission rate processed successfully");
+    //        return Ok(response);
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        _logger.LogError(e, "❌ Failed to process commission rate");
+    //        return StatusCode(500);
+    //    }
+    //}
 
     private ExchangeRateQuery BuildQueryFromPayload(ExchangePayload payload)
     {

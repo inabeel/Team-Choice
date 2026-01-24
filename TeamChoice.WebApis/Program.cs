@@ -5,6 +5,7 @@ using TeamChoice.WebApis.Application.Orchestrators;
 using TeamChoice.WebApis.Application.Policies;
 using TeamChoice.WebApis.Application.Services;
 using TeamChoice.WebApis.Application.Validators;
+using TeamChoice.WebApis.Domain.Models;
 using TeamChoice.WebApis.Infrastructure.Clients;
 using TeamChoice.WebApis.Middlewares;
 
@@ -17,6 +18,9 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+
+        builder.Services.Configure<JwtOptions>(
+            builder.Configuration.GetSection("Jwt"));
 
         builder.Services.AddControllers();
 
@@ -37,8 +41,7 @@ public class Program
                 client.Timeout = TimeSpan.FromSeconds(30);
             });
 
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddTawakkalSwaggerSchema();
 
         var app = builder.Build();
 
