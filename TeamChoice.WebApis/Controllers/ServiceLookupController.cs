@@ -6,7 +6,7 @@ namespace TeamChoice.WebApis.Controllers;
 
 [ApiController]
 [Route("api/v1/services")]
-public class ServiceLookupController : ControllerBase
+public class ServiceLookupController : BaseApiController
 {
     private readonly ILocServicesService _locServicesService;
     private readonly string _locId;

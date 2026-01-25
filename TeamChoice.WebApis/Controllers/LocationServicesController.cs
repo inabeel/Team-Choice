@@ -4,9 +4,8 @@ using TeamChoice.WebApis.Contracts.DTOs;
 
 namespace TeamChoice.WebApis.Controllers;
 
-[ApiController]
 [Route("api/v1/location-services/")]
-public class LocationServicesController : ControllerBase
+public class LocationServicesController : BaseApiController
 {
     private readonly ILocServicesService _locServicesService;
 
