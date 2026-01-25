@@ -1,4 +1,4 @@
-﻿using TeamChoice.WebApis.Domain.Models;
+﻿using TeamChoice.WebApis.Contracts;
 
 namespace TeamChoice.WebApis.Application.Services;
 

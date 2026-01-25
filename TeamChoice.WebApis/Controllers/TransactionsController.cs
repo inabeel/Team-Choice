@@ -2,7 +2,7 @@
 using Swashbuckle.AspNetCore.Annotations;
 using TeamChoice.WebApis.Application.Facades;
 using TeamChoice.WebApis.Application.Orchestrators;
-using TeamChoice.WebApis.Domain.Models.DTOs;
+using TeamChoice.WebApis.Contracts.DTOs;
 
 namespace TeamChoice.WebApis.Controllers;
 

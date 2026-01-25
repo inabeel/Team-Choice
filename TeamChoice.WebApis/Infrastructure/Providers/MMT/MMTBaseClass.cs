@@ -1,11 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Security.Principal;
-using System.Threading.Tasks;
-using TeamChoice.WebApis.Domain.Models;
-using TeamChoice.WebApis.Domain.Models.DTOs;
+﻿using TeamChoice.WebApis.Contracts;
+using TeamChoice.WebApis.Contracts.DTOs;
 
 namespace TeamChoice.WebApis.Infrastructure.Providers.MMT;
 

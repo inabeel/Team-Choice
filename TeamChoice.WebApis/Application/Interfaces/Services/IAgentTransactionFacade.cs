@@ -1,4 +1,5 @@
-﻿using TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
+﻿using TeamChoice.WebApis.Contracts.Exchanges;
+using TeamChoice.WebApis.Domain.Models;
 
 namespace TeamChoice.WebApis.Application.Interfaces.Services;
 
@@ -26,7 +27,7 @@ public interface IAgentTransactionFacade
 
     Task<long> UpdateAfterPayingTransactionAsync(string trnsCode, string newStatus);
 
-    Task<ExchangeRateResponseDto> GetExchangeRateAsync(ExchangeRateQueryDto exchangeRateQuery);
+    Task<InternalExchangeRateResult> GetExchangeRateAsync(ExchangeRateQueryDto exchangeRateQuery);
 
     Task<int> GetLocIdForCashPickupServiceAsync(string serviceCode);
 }

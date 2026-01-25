@@ -1,5 +1,5 @@
 ﻿namespace TeamChoice.WebApis.Middlewares;
 
-public static class JwtSetup
+public static class JwtAuthExtensions
 {
 }

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace TeamChoice.WebApis.Domain.Models.DTOs
+namespace TeamChoice.WebApis.Contracts.DTOs
 {
     public class MMTAccount
     {

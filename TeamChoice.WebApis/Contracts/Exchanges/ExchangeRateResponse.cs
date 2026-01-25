@@ -1,4 +1,4 @@
-﻿namespace TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
+﻿namespace TeamChoice.WebApis.Contracts.Exchanges;
 
 public class ExchangeDetails
 {

@@ -1,5 +1,5 @@
-﻿using TeamChoice.WebApis.Domain.Exceptions;
-using TeamChoice.WebApis.Domain.Models.DTOs;
+﻿using TeamChoice.WebApis.Contracts.DTOs;
+using TeamChoice.WebApis.Domain.Exceptions;
 
 namespace TeamChoice.WebApis.Application.Validators;
 

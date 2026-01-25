@@ -1,6 +1,5 @@
 ﻿using TeamChoice.WebApis.Application.Interfaces.Services;
-using TeamChoice.WebApis.Domain.Models;
-using TeamChoice.WebApis.Domain.Models.DTOs;
+using TeamChoice.WebApis.Contracts;
 
 namespace TeamChoice.WebApis.Infrastructure.Providers.MMT;
 

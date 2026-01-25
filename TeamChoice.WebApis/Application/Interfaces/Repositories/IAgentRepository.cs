@@ -1,4 +1,4 @@
-﻿using TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
+﻿using TeamChoice.WebApis.Contracts.Exchanges;
 
 namespace TeamChoice.WebApis.Application.Interfaces.Repositories;
 

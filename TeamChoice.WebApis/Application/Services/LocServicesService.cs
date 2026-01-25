@@ -1,4 +1,4 @@
-﻿using TeamChoice.WebApis.Domain.Models.DTOs;
+﻿using TeamChoice.WebApis.Contracts.DTOs;
 using TeamChoice.WebApis.Infrastructure.Repositories;
 using TeamChoice.WebApis.Utils;
 

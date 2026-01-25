@@ -1,6 +1,6 @@
 ﻿using TeamChoice.WebApis.Application.Orchestrators;
-using TeamChoice.WebApis.Domain.Models.DTOs;
-using TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
+using TeamChoice.WebApis.Contracts.DTOs;
+using TeamChoice.WebApis.Contracts.Exchanges;
 
 namespace TeamChoice.WebApis.Application;
 

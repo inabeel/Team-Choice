@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace TeamChoice.WebApis.Domain.Models.DTOs;
+namespace TeamChoice.WebApis.Contracts.DTOs;
 
 public record TransactionRequestDto
 {

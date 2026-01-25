@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
+using TeamChoice.WebApis.Contracts.DTOs;
 using TeamChoice.WebApis.Domain.Exceptions;
-using TeamChoice.WebApis.Domain.Models.DTOs;
 
 namespace TeamChoice.WebApis.Middlewares;
 
@@ -32,9 +32,7 @@ public sealed class GlobalExceptionMiddleware
         }
     }
 
-    private static async Task HandleExceptionAsync(
-        HttpContext context,
-        Exception exception)
+    private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var statusCode = exception switch
         {

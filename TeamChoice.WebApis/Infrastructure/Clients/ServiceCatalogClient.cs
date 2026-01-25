@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using TeamChoice.WebApis.Domain.Models.DTOs;
+using TeamChoice.WebApis.Contracts.DTOs;
 
 namespace TeamChoice.WebApis.Infrastructure.Clients;
 

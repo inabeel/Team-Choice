@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Security.Principal;
 
-namespace TeamChoice.WebApis.Domain.Models.DTOs
+namespace TeamChoice.WebApis.Contracts.DTOs
 {
     public class MMTApiResponse
     {

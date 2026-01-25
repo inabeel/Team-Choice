@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TeamChoice.WebApis.Application.Services;
-using TeamChoice.WebApis.Domain.Models.DTOs;
+using TeamChoice.WebApis.Contracts.DTOs;
 
 namespace TeamChoice.WebApis.Controllers;
 

@@ -1,6 +1,6 @@
 ﻿using TeamChoice.WebApis.Application.Interfaces.Repositories;
 using TeamChoice.WebApis.Application.Services;
-using TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
+using TeamChoice.WebApis.Contracts.Exchanges;
 using TeamChoice.WebApis.Utils;
 
 namespace TeamChoice.WebApis.Infrastructure.Repositories;

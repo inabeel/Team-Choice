@@ -1,7 +1,8 @@
 ﻿using TeamChoice.WebApis.Application.Interfaces.Repositories;
 using TeamChoice.WebApis.Application.Interfaces.Services;
 using TeamChoice.WebApis.Application.Mappers;
-using TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
+using TeamChoice.WebApis.Contracts.Exchanges;
+using TeamChoice.WebApis.Domain.Models;
 
 namespace TeamChoice.WebApis.Application.Facades;
 
@@ -102,7 +103,7 @@ public class AgentTransactionFacade : IAgentTransactionFacade
         return await _agentRepository.UpdateAfterPayingTransactionAsync(trnsCode, newStatus);
     }
 
-    public async Task<ExchangeRateResponseDto> GetExchangeRateAsync(ExchangeRateQueryDto exchangeRateQuery)
+    public async Task<InternalExchangeRateResult> GetExchangeRateAsync(ExchangeRateQueryDto exchangeRateQuery)
     {
         _logger.LogDebug("💱 Fetching exchange rate for: {@Query}", exchangeRateQuery);
         var rate = await _agentRepository.GetExchangeRateAsync(exchangeRateQuery);
@@ -113,7 +114,7 @@ public class AgentTransactionFacade : IAgentTransactionFacade
             return null;
         }
 
-        return ExchangeResponseMapper.MapToExchangeRateResponseDto(rate);
+        return ExchangeResponseMapper.MapToExchangeRateResponse(rate);
     }
 
     public async Task<int> GetLocIdForCashPickupServiceAsync(string serviceCode)

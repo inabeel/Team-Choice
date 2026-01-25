@@ -1,5 +1,5 @@
 ﻿using TeamChoice.WebApis.Application.Validators;
-using TeamChoice.WebApis.Domain.Models.DTOs;
+using TeamChoice.WebApis.Contracts.DTOs;
 
 namespace TeamChoice.WebApis.Application.Orchestrators;
 

@@ -1,6 +1,6 @@
 ﻿using TeamChoice.WebApis.Application.Interfaces.Services;
-using TeamChoice.WebApis.Domain.Models;
-using TeamChoice.WebApis.Domain.Models.DTOs;
+using TeamChoice.WebApis.Contracts;
+using TeamChoice.WebApis.Contracts.DTOs;
 using TeamChoice.WebApis.Infrastructure.Providers.Security;
 
 namespace TeamChoice.WebApis.Infrastructure.Providers.SomBank;

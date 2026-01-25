@@ -1,4 +1,4 @@
-﻿namespace TeamChoice.WebApis.Domain.Models;
+﻿namespace TeamChoice.WebApis.Contracts;
 
 
 public class ServiceProviderProperties

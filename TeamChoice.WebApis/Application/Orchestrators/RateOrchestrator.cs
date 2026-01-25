@@ -1,17 +1,17 @@
-﻿using TeamChoice.WebApis.Application.Facades;
-using TeamChoice.WebApis.Application.Interfaces.Repositories;
+﻿using TeamChoice.WebApis.Application.Interfaces.Repositories;
 using TeamChoice.WebApis.Application.Interfaces.Services;
+using TeamChoice.WebApis.Contracts.DTOs;
+using TeamChoice.WebApis.Contracts.Exchanges;
 using TeamChoice.WebApis.Domain.Constants;
-using TeamChoice.WebApis.Domain.Models.DTOs;
-using TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
+using TeamChoice.WebApis.Domain.Models;
 
 namespace TeamChoice.WebApis.Application.Orchestrators;
 
 public interface IRateOrchestrator
 {
-    Task<ExchangeRateResponseDto> GetInternalRateAsync(ExchangeRatePayloadDto payload);
+    Task<InternalExchangeRateResult> GetInternalRateAsync(ExchangeRatePayloadDto payload);
 
-    Task<ExchangeResponseBuilderDto> GetExternalRateAsync(ExchangeRatePayloadDto payload);
+    Task<ExchangeResponseBuilderDto> GetExternalRateAsync(ExchangePayloadDto payload);
 }
 
 public sealed class RateOrchestrator : IRateOrchestrator
@@ -25,7 +25,7 @@ public sealed class RateOrchestrator : IRateOrchestrator
         _rateRepository = rateRepository;
     }
 
-    public async Task<ExchangeRateResponseDto> GetInternalRateAsync(ExchangeRatePayloadDto payload)
+    public async Task<InternalExchangeRateResult> GetInternalRateAsync(ExchangeRatePayloadDto payload)
     {
         var query = new ExchangeRateQueryDto
         {
@@ -39,9 +39,10 @@ public sealed class RateOrchestrator : IRateOrchestrator
         return RateCalculator.ApplyInternalRate(response, payload);
     }
 
-    public async Task<ExchangeResponseBuilderDto> GetExternalRateAsync(ExchangeRatePayloadDto payload)
+    public async Task<ExchangeResponseBuilderDto> GetExternalRateAsync(ExchangePayloadDto payload)
     {
-        var commission = await _rateRepository.CalculateExternalPartnerCommissionAsync(payload);
+        var commission =
+            await _rateRepository.CalculateExternalPartnerCommissionAsync(payload);
 
         return RateCalculator.BuildExternalResponse(commission, payload);
     }
@@ -49,20 +50,32 @@ public sealed class RateOrchestrator : IRateOrchestrator
 
 public static class RateCalculator
 {
-    public static ExchangeRateResponseDto ApplyInternalRate(ExchangeRateResponseDto rateResponse, ExchangeRatePayloadDto payload)
+    public static InternalExchangeRateResult ApplyInternalRate(InternalExchangeRateResult rateResponse, ExchangeRatePayloadDto payload)
     {
-        var payer = rateResponse.ExchangeDetails!.Payer!;
-        var recipient = rateResponse.ExchangeDetails!.Recipient!;
+        ArgumentNullException.ThrowIfNull(rateResponse);
+        ArgumentNullException.ThrowIfNull(payload);
 
-        var exchangeRate = Math.Round(payer.AmountDue, 4);
+        var exchangeDetails = rateResponse.ExchangeDetails
+            ?? throw new InvalidOperationException("ExchangeDetails is missing");
 
-        var amountDue = Math.Round(exchangeRate * payload.RecipientAmount, 2);
+        var payer = exchangeDetails.Payer
+            ?? throw new InvalidOperationException("Payer is missing");
 
-        var transactionFee = Math.Round(amountDue * RateConstants.TRANSACTION_FEE_PERCENT, 4);
+        var recipient = exchangeDetails.Recipient
+            ?? throw new InvalidOperationException("Recipient is missing");
+
+        // Java: payer.getAmountDue().setScale(4, HALF_UP)
+        var exchangeRate = Math.Round(payer.AmountDue, 4, MidpointRounding.AwayFromZero);
+
+        // Java: exchangeRate.multiply(recipientAmount).setScale(2, HALF_UP)
+        var amountDue = Math.Round(exchangeRate * payload.RecipientAmount, 2, MidpointRounding.AwayFromZero);
+
+        // Java: amountDue.multiply(FEE_PERCENT).setScale(4, HALF_UP)
+        var transactionFee = Math.Round(amountDue * RateConstants.TRANSACTION_FEE_PERCENT, 4, MidpointRounding.AwayFromZero);
 
         return rateResponse with
         {
-            ExchangeDetails = rateResponse.ExchangeDetails with
+            ExchangeDetails = exchangeDetails with
             {
                 Payer = payer with
                 {
@@ -78,29 +91,32 @@ public static class RateCalculator
         };
     }
 
-    public static ExchangeResponseBuilderDto BuildExternalResponse(CommissionResultDTO rateResponse, ExchangeRatePayloadDto payload)
+    public static ExchangeResponseBuilderDto BuildExternalResponse(CommissionResultDTO commission, ExchangePayloadDto payload)
     {
+        ArgumentNullException.ThrowIfNull(commission);
+        ArgumentNullException.ThrowIfNull(payload);
+
         return new ExchangeResponseBuilderDto
         {
             Timestamp = DateTime.UtcNow,
             StatusMessage = "OK",
-            StatusCode = StatusCodes.Status200OK,
-            ExchangeDetails = new ExchangeResponseBuilderDto.ExchangeDetailsDto
+            StatusCode = 200,
+
+            ExchangeDetails = new ExchangeDetailsDto
             {
-                Payer = new ExchangeResponseBuilderDto.PayerDto
+                Payer = new PayerDto
                 {
                     AmountDue = payload.SendingAmount,
-                    CurrencyCode = rateResponse.SendingCurrencyCode,
-                    ExchangeRate = rateResponse.ExchangeRate,
-                    TransactionFee = rateResponse.TransactionFee
+                    CurrencyCode = commission.SendingCurrencyCode,
+                    ExchangeRate = commission.ExchangeRate,
+                    TransactionFee = commission.TransactionFee
                 },
-                Recipient = new ExchangeResponseBuilderDto.RecipientDto
+                Recipient = new RecipientDto
                 {
-                    Amount = rateResponse.Amount,
-                    CurrencyCode = rateResponse.ReceivingCurrencyCode
+                    Amount = commission.Amount,
+                    CurrencyCode = commission.ReceivingCurrencyCode
                 }
             }
         };
     }
-
 }

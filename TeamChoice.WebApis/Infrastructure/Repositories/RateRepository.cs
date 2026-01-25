@@ -1,7 +1,7 @@
 ﻿using TeamChoice.WebApis.Application.Interfaces.Repositories;
 using TeamChoice.WebApis.Application.Services;
-using TeamChoice.WebApis.Domain.Models.DTOs;
-using TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
+using TeamChoice.WebApis.Contracts.DTOs;
+using TeamChoice.WebApis.Contracts.Exchanges;
 using TeamChoice.WebApis.Utils;
 
 namespace TeamChoice.WebApis.Infrastructure.Repositories;
@@ -17,7 +17,7 @@ public class RateRepository : IRateRepository
         _logger = logger;
     }
 
-    public async Task<CommissionResultDTO> CalculateExternalPartnerCommissionAsync(ExchangeRatePayloadDto exchangePayload)
+    public async Task<CommissionResultDTO> CalculateExternalPartnerCommissionAsync(ExchangePayloadDto exchangePayload)
     {
         var parameters = new Dictionary<string, object>
         {
