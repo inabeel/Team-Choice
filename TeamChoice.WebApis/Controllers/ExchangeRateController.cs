@@ -2,6 +2,7 @@
 using Swashbuckle.AspNetCore.Annotations;
 using TeamChoice.WebApis.Application.Orchestrators;
 using TeamChoice.WebApis.Domain.Models.DTOs;
+using TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
 
 namespace TeamChoice.WebApis.Controllers;
 
@@ -38,7 +39,7 @@ public class ExchangeRateController : BaseApiController
          Tags = new[] { "transactions" })]
 
     [ProducesResponseType(typeof(HttpResponseDto<ExchangeResponseBuilderDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetExternalExchangeRate([FromBody] ExchangePayloadDto payload)
+    public async Task<IActionResult> GetExternalExchangeRate([FromBody] ExchangeRatePayloadDto payload)
     {
         var result = await _rateOrchestrator.GetExternalRateAsync(payload);
         return OkResponse(result);

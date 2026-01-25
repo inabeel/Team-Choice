@@ -1,36 +1,9 @@
-﻿using TeamChoice.WebApis.Domain.Models.DTOs;
-using YourNamespace.Repositories;
+﻿using TeamChoice.WebApis.Application.Interfaces.Repositories;
+using TeamChoice.WebApis.Application.Interfaces.Services;
+using TeamChoice.WebApis.Application.Mappers;
+using TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
 
 namespace TeamChoice.WebApis.Application.Facades;
-
-public interface IAgentTransactionFacade
-{
-    Task<SMTMstMpUser> GetUserByLocCodeAsync(string locCode);
-
-    Task<string> GetRecLocCodeAsync(string country, string serviceCode);
-    
-    Task<decimal> FindRcvcomByAgtCodeAsync(string agtCode);
-    
-    Task<OutboundProviderCredential> FindOutboundCredAsync(string serviceCode);
-    
-    Task<decimal> FindSmtCommissionAsync(string trnsCode);
-    
-    Task<string> FindTrnsCodeFromSmtTransactionsAsync(string referenceNumber);
-    
-    Task<string> FindServiceCodeUsingBankServiceTypeAsync(string serviceCode);
-    
-    Task<string> ValidateTransactionAsync(string partnerReference);
-    
-    Task<string> ValidateTransactionStatusAsync(string authNumber);
-    
-    Task<long> InsertPartnerTransactionAsync(PartnerTransaction partnerTransaction);
-    
-    Task<long> UpdateAfterPayingTransactionAsync(string trnsCode, string newStatus);
-    
-    Task<ExchangeRateResponse> GetExchangeRateAsync(ExchangeRateQueryDto exchangeRateQuery);
-    
-    Task<int> GetLocIdForCashPickupServiceAsync(string serviceCode);
-}
 
 public class AgentTransactionFacade : IAgentTransactionFacade
 {
@@ -43,10 +16,7 @@ public class AgentTransactionFacade : IAgentTransactionFacade
     private readonly string _mmtSoLocation;
     private readonly string _mmtKeLocation;
 
-    public AgentTransactionFacade(
-        IAgentRepository agentRepository,
-        ILogger<AgentTransactionFacade> logger,
-        IConfiguration configuration)
+    public AgentTransactionFacade(IAgentRepository agentRepository, ILogger<AgentTransactionFacade> logger, IConfiguration configuration)
     {
         _agentRepository = agentRepository;
         _logger = logger;
@@ -132,7 +102,7 @@ public class AgentTransactionFacade : IAgentTransactionFacade
         return await _agentRepository.UpdateAfterPayingTransactionAsync(trnsCode, newStatus);
     }
 
-    public async Task<ExchangeRateResponse> GetExchangeRateAsync(ExchangeRateQueryDto exchangeRateQuery)
+    public async Task<ExchangeRateResponseDto> GetExchangeRateAsync(ExchangeRateQueryDto exchangeRateQuery)
     {
         _logger.LogDebug("💱 Fetching exchange rate for: {@Query}", exchangeRateQuery);
         var rate = await _agentRepository.GetExchangeRateAsync(exchangeRateQuery);
@@ -143,52 +113,19 @@ public class AgentTransactionFacade : IAgentTransactionFacade
             return null;
         }
 
-        return MapToExchangeRateResponse(rate);
+        return ExchangeResponseMapper.MapToExchangeRateResponseDto(rate);
     }
 
     public async Task<int> GetLocIdForCashPickupServiceAsync(string serviceCode)
     {
         _logger.LogDebug("📍 Fetching LocId for LocationService with ServiceCode={ServiceCode}", serviceCode);
         var result = await _agentRepository.GetLocIdForServiceCodeAsync(serviceCode);
+
         if (result == null)
         {
             throw new InvalidOperationException($"ServiceCode not found '{serviceCode}'");
         }
+        
         return result.Value;
-    }
-
-    private ExchangeRateResponse MapToExchangeRateResponse(ExchangeRateResult rateResult)
-    {
-        var response = new ExchangeRateResponse
-        {
-            Timestamp = DateTime.Now,
-            StatusCode = 200,
-            StatusMessage = "OK"
-        };
-
-        // Recipient
-        var recipient = new Recipient
-        {
-            Amount = rateResult.EtbIr,
-            CurrencyCode = "ETB" // Hardcoded in original
-        };
-
-        // Payer
-        var payer = new Payer
-        {
-            AmountDue = rateResult.Usd,
-            CurrencyCode = "USD",
-            ExchangeRate = 0.7843m, // TODO: Move to config
-            TransactionFee = Math.Round(rateResult.Usd * 0.012m, 4, MidpointRounding.AwayFromZero)
-        };
-
-        // Assembly
-        response.ExchangeDetails = new ExchangeDetails
-        {
-            Recipient = recipient,
-            Payer = payer
-        };
-
-        return response;
     }
 }

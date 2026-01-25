@@ -1,8 +1,10 @@
 ﻿using TeamChoice.WebApis.Application.Facades;
+using TeamChoice.WebApis.Application.Interfaces.Services;
 using TeamChoice.WebApis.Application.Services;
 using TeamChoice.WebApis.Domain.Configuration;
 using TeamChoice.WebApis.Domain.Exceptions;
 using TeamChoice.WebApis.Domain.Models.DTOs;
+using TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
 
 namespace TeamChoice.WebApis.Application.Orchestrators;
 

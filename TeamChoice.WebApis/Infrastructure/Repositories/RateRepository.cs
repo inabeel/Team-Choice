@@ -1,57 +1,54 @@
-﻿using TeamChoice.WebApis.Application.Services;
+﻿using TeamChoice.WebApis.Application.Interfaces.Repositories;
+using TeamChoice.WebApis.Application.Services;
 using TeamChoice.WebApis.Domain.Models.DTOs;
+using TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
 using TeamChoice.WebApis.Utils;
 
-namespace TeamChoice.WebApis.Infrastructure.Repositories
+namespace TeamChoice.WebApis.Infrastructure.Repositories;
+
+public class RateRepository : IRateRepository
 {
-    public interface IRateRepository
+    private readonly IDatabaseService _databaseService;
+    private readonly ILogger<RateRepository> _logger;
+
+    public RateRepository(IDatabaseService databaseService, ILogger<RateRepository> logger)
     {
-        Task<CommissionResultDTO> CalculateExternalPartnerCommissionAsync(ExchangePayload exchangePayload);
+        _databaseService = databaseService;
+        _logger = logger;
     }
-    public class RateRepository : IRateRepository
+
+    public async Task<CommissionResultDTO> CalculateExternalPartnerCommissionAsync(ExchangeRatePayloadDto exchangePayload)
     {
-        private readonly IDatabaseService _databaseService;
-        private readonly ILogger<RateRepository> _logger;
-
-        public RateRepository(IDatabaseService databaseService, ILogger<RateRepository> logger)
+        var parameters = new Dictionary<string, object>
         {
-            _databaseService = databaseService;
-            _logger = logger;
+            { "@SendingCountry", exchangePayload.SendingCountry },
+            { "@CurrencyCode", exchangePayload.CurrencyCode },
+            { "@ServiceCode", exchangePayload.ServiceCode },
+            { "@RecipientCountry", exchangePayload.RecipientCountry },
+            { "@SendingAmount", exchangePayload.SendingAmount }
+        };
+
+        try
+        {
+            // Execute stored procedure
+            return await _databaseService.ExecuteStoredProcedureAsync(
+                RateSqlQueries.CALCULATE_EXTERNAL_PARTNER_COMMISSION,
+                parameters,
+                reader => new CommissionResultDTO
+                {
+                    Amount = Convert.ToDecimal(reader["Amount"]),
+                    ReceivingCurrencyCode = reader["ReceivingCurrencyCode"] as string,
+                    AmountDue = Convert.ToDecimal(reader["AmountDue"]),
+                    SendingCurrencyCode = reader["SendingCurrencyCode"] as string,
+                    ExchangeRate = Convert.ToDecimal(reader["ExchangeRate"]),
+                    TransactionFee = Convert.ToDecimal(reader["TransactionFee"])
+                }
+            );
         }
-
-        public async Task<CommissionResultDTO> CalculateExternalPartnerCommissionAsync(ExchangePayload exchangePayload)
+        catch (Exception ex)
         {
-            var parameters = new Dictionary<string, object>
-            {
-                { "@SendingCountry", exchangePayload.SendingCountry },
-                { "@CurrencyCode", exchangePayload.CurrencyCode },
-                { "@ServiceCode", exchangePayload.ServiceCode },
-                { "@RecipientCountry", exchangePayload.RecipientCountry },
-                { "@SendingAmount", exchangePayload.SendingAmount }
-            };
-
-            try
-            {
-                // Execute stored procedure
-                return await _databaseService.ExecuteStoredProcedureAsync(
-                    RateSqlQueries.CALCULATE_EXTERNAL_PARTNER_COMMISSION,
-                    parameters,
-                    reader => new CommissionResultDTO
-                    {
-                        Amount = Convert.ToDecimal(reader["Amount"]),
-                        ReceivingCurrencyCode = reader["ReceivingCurrencyCode"] as string,
-                        AmountDue = Convert.ToDecimal(reader["AmountDue"]),
-                        SendingCurrencyCode = reader["SendingCurrencyCode"] as string,
-                        ExchangeRate = Convert.ToDecimal(reader["ExchangeRate"]),
-                        TransactionFee = Convert.ToDecimal(reader["TransactionFee"])
-                    }
-                );
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "❌ Error while executing commission stored procedure for payload: {@Payload}", exchangePayload);
-                throw; // Re-throw to be handled by controller/middleware
-            }
+            _logger.LogError(ex, "❌ Error while executing commission stored procedure for payload: {@Payload}", exchangePayload);
+            throw; // Re-throw to be handled by controller/middleware
         }
     }
 }

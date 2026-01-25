@@ -1,4 +1,4 @@
-﻿using TeamChoice.WebApis.Application.Interfaces;
+﻿using TeamChoice.WebApis.Application.Interfaces.Services;
 using TeamChoice.WebApis.Domain.Models;
 using TeamChoice.WebApis.Domain.Models.DTOs;
 

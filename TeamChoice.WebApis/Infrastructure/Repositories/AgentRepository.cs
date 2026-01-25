@@ -1,7 +1,7 @@
-﻿using TeamChoice.WebApis.Application.Services;
-using TeamChoice.WebApis.Domain.Models.DTOs;
+﻿using TeamChoice.WebApis.Application.Interfaces.Repositories;
+using TeamChoice.WebApis.Application.Services;
+using TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
 using TeamChoice.WebApis.Utils;
-using YourNamespace.Repositories;
 
 namespace TeamChoice.WebApis.Infrastructure.Repositories;
 
@@ -48,13 +48,13 @@ public class AgentRepository : IAgentRepository
         );
     }
 
-    public async Task<ExchangeRateResult> GetExchangeRateAsync(ExchangeRateQuery query)
+    public async Task<ExchangeRateResult> GetExchangeRateAsync(ExchangeRateQueryDto query)
     {
         var parameters = new Dictionary<string, object>
     {
-        { "@curcode", query.CurCode },
-        { "@agtcode", query.AgtCode },
-        { "@loccode", query.LocCode }
+        { "@curcode", query.CurrencyCode },
+        { "@agtcode", query.AgentCode },
+        { "@loccode", query.LocationCode }
     };
 
         return await _databaseService.QueryOneAsync(

@@ -1,14 +1,17 @@
 ﻿using TeamChoice.WebApis.Application.Facades;
+using TeamChoice.WebApis.Application.Interfaces.Repositories;
+using TeamChoice.WebApis.Application.Interfaces.Services;
 using TeamChoice.WebApis.Domain.Constants;
 using TeamChoice.WebApis.Domain.Models.DTOs;
-using TeamChoice.WebApis.Infrastructure.Repositories;
+using TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
 
 namespace TeamChoice.WebApis.Application.Orchestrators;
 
 public interface IRateOrchestrator
 {
     Task<ExchangeRateResponseDto> GetInternalRateAsync(ExchangeRatePayloadDto payload);
-    Task<ExchangeResponseBuilderDto> GetExternalRateAsync(ExchangePayloadDto payload);
+
+    Task<ExchangeResponseBuilderDto> GetExternalRateAsync(ExchangeRatePayloadDto payload);
 }
 
 public sealed class RateOrchestrator : IRateOrchestrator
@@ -16,16 +19,13 @@ public sealed class RateOrchestrator : IRateOrchestrator
     private readonly IAgentTransactionFacade _agentFacade;
     private readonly IRateRepository _rateRepository;
 
-    public RateOrchestrator(
-        IAgentTransactionFacade agentFacade,
-        IRateRepository rateRepository)
+    public RateOrchestrator(IAgentTransactionFacade agentFacade, IRateRepository rateRepository)
     {
         _agentFacade = agentFacade;
         _rateRepository = rateRepository;
     }
 
-    public async Task<ExchangeRateResponseDto> GetInternalRateAsync(
-        ExchangeRatePayloadDto payload)
+    public async Task<ExchangeRateResponseDto> GetInternalRateAsync(ExchangeRatePayloadDto payload)
     {
         var query = new ExchangeRateQueryDto
         {
@@ -39,8 +39,7 @@ public sealed class RateOrchestrator : IRateOrchestrator
         return RateCalculator.ApplyInternalRate(response, payload);
     }
 
-    public async Task<ExchangeResponseBuilderDto> GetExternalRateAsync(
-        ExchangePayloadDto payload)
+    public async Task<ExchangeResponseBuilderDto> GetExternalRateAsync(ExchangeRatePayloadDto payload)
     {
         var commission = await _rateRepository.CalculateExternalPartnerCommissionAsync(payload);
 
@@ -50,36 +49,36 @@ public sealed class RateOrchestrator : IRateOrchestrator
 
 public static class RateCalculator
 {
-    public static ExchangeRateResponseDto ApplyInternalRate(
-        ExchangeRateResponseDto rateResponse,
-        ExchangeRatePayloadDto payload)
+    public static ExchangeRateResponseDto ApplyInternalRate(ExchangeRateResponseDto rateResponse, ExchangeRatePayloadDto payload)
     {
-        var payer = rateResponse.ExchangeDetails.Payer;
-        var recipient = rateResponse.ExchangeDetails.Recipient;
+        var payer = rateResponse.ExchangeDetails!.Payer!;
+        var recipient = rateResponse.ExchangeDetails!.Recipient!;
 
-        // Set recipient amount from request
-        recipient.Amount = (decimal)payload.RecipientAmount;
+        var exchangeRate = Math.Round(payer.AmountDue, 4);
 
-        // Exchange rate with precision
-        payer.ExchangeRate = Math.Round(payer.AmountDue, 4);
+        var amountDue = Math.Round(exchangeRate * payload.RecipientAmount, 2);
 
-        // Amount due = rate × recipient amount
-        payer.AmountDue = Math.Round(
-            payer.ExchangeRate * (decimal)payload.RecipientAmount,
-            2);
+        var transactionFee = Math.Round(amountDue * RateConstants.TRANSACTION_FEE_PERCENT, 4);
 
-        // Transaction fee
-        payer.TransactionFee = Math.Round(
-            payer.AmountDue * RateConstants.TRANSACTION_FEE_PERCENT,
-            4);
-
-        return rateResponse;
+        return rateResponse with
+        {
+            ExchangeDetails = rateResponse.ExchangeDetails with
+            {
+                Payer = payer with
+                {
+                    ExchangeRate = exchangeRate,
+                    AmountDue = amountDue,
+                    TransactionFee = transactionFee
+                },
+                Recipient = recipient with
+                {
+                    Amount = payload.RecipientAmount
+                }
+            }
+        };
     }
 
-
-    public static ExchangeResponseBuilderDto BuildExternalResponse(
-    CommissionResultDTO rateResponse,
-    ExchangePayloadDto payload)
+    public static ExchangeResponseBuilderDto BuildExternalResponse(CommissionResultDTO rateResponse, ExchangeRatePayloadDto payload)
     {
         return new ExchangeResponseBuilderDto
         {

@@ -1,6 +1,6 @@
 ﻿using TeamChoice.WebApis.Domain.Models;
 
-namespace TeamChoice.WebApis.Application.Interfaces;
+namespace TeamChoice.WebApis.Application.Interfaces.Services;
 
 public interface IProviderLookupStrategy
 {

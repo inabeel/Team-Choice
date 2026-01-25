@@ -1,4 +1,4 @@
-﻿using TeamChoice.WebApis.Application.Interfaces;
+﻿using TeamChoice.WebApis.Application.Interfaces.Services;
 using TeamChoice.WebApis.Domain.Models;
 
 namespace TeamChoice.WebApis.Infrastructure.Providers.MMT;

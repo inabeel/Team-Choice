@@ -1,4 +1,5 @@
 ﻿using TeamChoice.WebApis.Domain.Models.DTOs;
+using TeamChoice.WebApis.Domain.Models.DTOs.Exchanges;
 
 namespace TeamChoice.WebApis.Application.Services
 {

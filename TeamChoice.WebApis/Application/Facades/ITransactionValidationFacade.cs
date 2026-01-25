@@ -1,4 +1,5 @@
-﻿using TeamChoice.WebApis.Domain.Models.DTOs;
+﻿using TeamChoice.WebApis.Application.Interfaces.Services;
+using TeamChoice.WebApis.Domain.Models.DTOs;
 
 namespace TeamChoice.WebApis.Application.Facades;
 
@@ -12,9 +13,7 @@ public sealed class TransactionValidationFacade : ITransactionValidationFacade
     private readonly IAgentTransactionFacade _agentTransactionFacade;
     private readonly ILogger<TransactionValidationFacade> _logger;
 
-    public TransactionValidationFacade(
-        IAgentTransactionFacade agentTransactionFacade,
-        ILogger<TransactionValidationFacade> logger)
+    public TransactionValidationFacade(IAgentTransactionFacade agentTransactionFacade, ILogger<TransactionValidationFacade> logger)
     {
         _agentTransactionFacade = agentTransactionFacade;
         _logger = logger;
