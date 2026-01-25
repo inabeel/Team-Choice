@@ -19,8 +19,7 @@ public class Program
 
         // Add services to the container.
 
-        builder.Services.Configure<JwtOptions>(
-            builder.Configuration.GetSection("Jwt"));
+        builder.AddJwtAuthConfigurations();
 
         builder.Services.AddControllers();
 
@@ -56,8 +55,8 @@ public class Program
 
         app.UseHttpsRedirection();
 
-        //app.UseAuthorization();
-
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.MapControllers();
 
