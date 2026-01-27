@@ -40,6 +40,10 @@ public class Program
         builder.Services.Configure<ClientUrlProperties>(
             builder.Configuration.GetSection(ClientUrlProperties.SectionName));
 
+        // FIX: Explicitly register ClientUrlProperties so it can be injected directly
+        builder.Services.AddSingleton(resolver =>
+            resolver.GetRequiredService<IOptions<ClientUrlProperties>>().Value);
+
         // Register ServiceProviderProperties
         // Assumes "service:providers" section in appsettings.json matches the structure
         builder.Services.Configure<ServiceProviderProperties>(
@@ -68,6 +72,7 @@ public class Program
         builder.Services.AddScoped<IRateRepository, RateRepository>();
 
         // --- Core Business Services ---
+        builder.Services.AddScoped<ITransactionValidationFacade, TransactionValidationFacade>();
         builder.Services.AddScoped<IAgentTransactionFacade, AgentTransactionFacade>();
         //builder.Services.AddScoped<ITransactionService, TransactionService>();
         //builder.Services.AddScoped<IRemittanceService, RemittanceService>();
@@ -81,7 +86,8 @@ public class Program
         builder.Services.AddScoped<ITransactionOrchestrator, TransactionOrchestrator>();
         builder.Services.AddScoped<ITransactionValidator, TransactionValidator>();
         builder.Services.AddScoped<ITransactionProcessor, TransactionProcessor>();
-
+        builder.Services.AddScoped<ICancellationOrchestrator, CancellationOrchestrator>();
+        builder.Services.AddScoped<IRateOrchestrator, RateOrchestrator>();
         // --- HTTP Client Services ---
         // Registers the service with an injected HttpClient configured from IHttpClientFactory
 
