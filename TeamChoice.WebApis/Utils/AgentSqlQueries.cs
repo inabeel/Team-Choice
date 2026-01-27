@@ -3,8 +3,8 @@
     public static class AgentSqlQueries
     {
         public const string FIND_RECEIVE_COMMISSION_BY_AGENT_CODE = @"
-            SELECT AMOUNT
-            FROM sMT_IndividualCommission
+            SELECT AMOUNT 
+            FROM sMT_IndividualCommission 
             WHERE LOC = @agtCode AND COMMTYPE = 'R'";
 
         public const string FIND_OUTBOUND_CREDENTIALS_BY_SERVICE_CODE = @"
@@ -24,7 +24,7 @@
             SELECT SMT_TOTCOM
             FROM sMT_TRANSACTION_COMMISSION_RATES c
             INNER JOIN sMT_TRANSACTION t ON t.TrnsCode = c.TrnsCode
-            WHERE t.TrnsCode = @agtCode"; // Parameter name matches Java usage, though query implies TrnsCode
+            WHERE t.TrnsCode = @agtCode";
 
         public const string FIND_BANK_SERVICETYPE = @"
             SELECT DeliveryTypeID
@@ -39,7 +39,7 @@
         public const string VALIDATE_TRANSACTION_STATUS = @"
             SELECT D.DESCRIPTION TrnsStatus 
             FROM sMT_TRANSACTION T 
-            INNER JOIN sMT_STATUS_DESCRIPTION D ON D.STATUS+D.SUBSTATUS = TrnsStatus+TrnsSubStatus 
+            INNER JOIN  sMT_STATUS_DESCRIPTION D ON D.STATUS+D.SUBSTATUS = TrnsStatus+TrnsSubStatus 
             WHERE TrnsCode = @trnsCode";
 
         public const string INSERT_PARTNER_TRANSACTION = @"
