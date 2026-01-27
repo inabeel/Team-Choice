@@ -32,7 +32,7 @@ public class Program
 
         // Add services to the container.
 
-        // builder.AddJwtAuthConfigurations();
+         builder.AddJwtAuthConfigurations();
 
         builder.Services.AddControllers();
 
@@ -130,8 +130,8 @@ public class Program
 
         app.UseHttpsRedirection();
 
-        //app.UseAuthentication();
-        //app.UseAuthorization();
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.MapControllers();
 

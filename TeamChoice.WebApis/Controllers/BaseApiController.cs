@@ -4,7 +4,7 @@ using TeamChoice.WebApis.Contracts.DTOs;
 
 namespace TeamChoice.WebApis.Controllers;
 
-//[Authorize]
+[Authorize]
 [ApiController]
 [Produces("application/json")]
 
