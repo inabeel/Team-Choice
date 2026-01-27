@@ -2,9 +2,9 @@ using Microsoft.Extensions.Options;
 using TeamChoice.WebApis.Application;
 using TeamChoice.WebApis.Application.Orchestrators;
 using TeamChoice.WebApis.Application.Policies;
-using TeamChoice.WebApis.Application.Services;
 using TeamChoice.WebApis.Application.Validators;
 using TeamChoice.WebApis.Infrastructure.Clients;
+using TeamChoice.WebApis.Infrastructure.Persistence;
 using TeamChoice.WebApis.Middlewares;
 
 namespace TeamChoice.WebApis;

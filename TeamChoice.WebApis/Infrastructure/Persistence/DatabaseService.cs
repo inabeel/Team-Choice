@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
 
-namespace TeamChoice.WebApis.Application.Services
+namespace TeamChoice.WebApis.Infrastructure.Persistence
 {
 
     public interface IDatabaseService

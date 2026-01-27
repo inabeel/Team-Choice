@@ -1,5 +1,5 @@
-﻿using TeamChoice.WebApis.Application.Services;
-using TeamChoice.WebApis.Domain.Entities;
+﻿using TeamChoice.WebApis.Domain.Entities;
+using TeamChoice.WebApis.Infrastructure.Persistence;
 using TeamChoice.WebApis.Utils;
 
 namespace TeamChoice.WebApis.Infrastructure.Repositories
@@ -32,9 +32,7 @@ namespace TeamChoice.WebApis.Infrastructure.Repositories
             // Note: If IDatabaseService only has QueryOneAsync, you might need to add QueryAsync<T> to it.
             // For now, I'll use a hypothetical QueryAsync similar to QueryOneAsync but returning IEnumerable.
 
-            return await _databaseService.QueryAsync(
-                LocServiceSqlQueries.FIND_BY_LOC_ID,
-                parameters,
+            return await _databaseService.QueryAsync(LocServiceSqlQueries.FIND_BY_LOC_ID, parameters,
                 reader => new LocServiceEntity
                 {
                     // Mapping fields based on LocServiceRes structure as Entity usually mirrors DB
