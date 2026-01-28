@@ -5,6 +5,7 @@ using TeamChoice.WebApis.Application.Interfaces.Repositories;
 using TeamChoice.WebApis.Application.Interfaces.Services;
 using TeamChoice.WebApis.Application.Orchestrators;
 using TeamChoice.WebApis.Application.Policies;
+using TeamChoice.WebApis.Application.Procesors;
 using TeamChoice.WebApis.Application.Services;
 using TeamChoice.WebApis.Application.Validators;
 using TeamChoice.WebApis.Contracts;
@@ -80,10 +81,15 @@ public class Program
         builder.Services.AddScoped<ILookupService, LookupService>();
         builder.Services.AddScoped<ILocServicesService, LocServicesService>();
         builder.Services.AddScoped<IProviderRouter, ProviderRouter>();
-
+        builder.Services.AddScoped<IRemittanceService, RemittanceService>();
+        builder.Services.AddScoped<ISendTeamsMessage, SendTeamsMessage>();
+        builder.Services.AddScoped<ITransactionForwarder, TransactionForwarder>();
+        //builder.Services.AddScoped<ITransactionProcessor, TransactionProcessor>();
+        builder.Services.AddScoped<ITransactionCallBack, TransactionCallBack>();
         // --- Orchestrators & Validators (Existing) ---
         builder.Services.AddScoped<IServiceLookupPolicy, ServiceLookupPolicy>();
         builder.Services.AddScoped<ITransactionOrchestrator, TransactionOrchestrator>();
+        builder.Services.AddScoped<ITransactionService, TransactionService>();
         builder.Services.AddScoped<ITransactionValidator, TransactionValidator>();
         builder.Services.AddScoped<ITransactionProcessor, TransactionProcessor>();
         builder.Services.AddScoped<ICancellationOrchestrator, CancellationOrchestrator>();

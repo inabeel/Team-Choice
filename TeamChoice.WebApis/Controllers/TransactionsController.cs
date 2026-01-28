@@ -35,7 +35,7 @@ public class TransactionsController : BaseApiController
     {
         // 1️⃣ Call orchestrator (validation + processing happen inside)
         var orchestrationResult =
-            await _transactionOrchestrator.ExecuteAsync(request);
+            await _transactionOrchestrator.HandleAsync(request);
 
         // TODO: transaction processing
         var result = new TransactionResultDto

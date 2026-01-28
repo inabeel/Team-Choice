@@ -1,4 +1,8 @@
-﻿namespace TeamChoice.WebApis.Contracts.Exchanges;
+﻿using System.ComponentModel.DataAnnotations;
+using TeamChoice.WebApis.Contracts.DTOs;
+using static TeamChoice.WebApis.Domain.Models.TransactionRequest;
+
+namespace TeamChoice.WebApis.Contracts.Exchanges;
 
 public class SMTMstMpUser
 {
@@ -59,20 +63,70 @@ public sealed class PartnerTransaction
     public string Status { get; init; } = default!;
     public string? Payload { get; init; }
 }
+public class TransactionRequestDTO
+{
+    public string TransactionId { get; set; }
 
+    [Required(ErrorMessage = "partnerReference is required")]
+    public string PartnerReference { get; set; }
+
+    [Required(ErrorMessage = "timestamp is required")]
+    public DateTime Timestamp { get; set; }
+
+    [Required(ErrorMessage = "purpose is required")]
+    public string Purpose { get; set; }
+
+    [MaxLength(255)]
+    public string Remarks { get; set; }
+
+    [Required(ErrorMessage = "relationship is required")]
+    public string Relationship { get; set; }
+
+    public string EmployeeId { get; set; }
+
+    [Required(ErrorMessage = "payment is required")]
+    public PaymentDto Payment { get; set; }
+
+    [Required(ErrorMessage = "sender is required")]
+    public PersonDto Sender { get; set; }
+
+    [Required(ErrorMessage = "recipient is required")]
+    public RecipientDto Recipient { get; set; }
+
+    [Required(ErrorMessage = "sendingLocation is required")]
+    public LocationDto SendingLocation { get; set; }
+
+    public PayeeLocationDto PayeeLocation { get; set; }
+}
+public class PayeeLocationDto : LocationDto
+{
+    public string Share { get; set; }
+}
 public class TransactionRequestDTOCopy
 {
     public PaymentInfo Payment { get; set; }
+    public string Timestamp { get;  set; }
+    public RecipientObj Recipient { get;  set; }
+    public LocationDto SendingLocation { get;  set; }
+    public string EmployeeId { get;  set; }
+    public SenderObj Sender { get; set; }
+    public string Remarks { get;  set; }
 }
 
 public class PaymentInfo
 {
     public string ServiceCode { get; set; }
+    public string CurrencyCode { get;  set; }
 }
 
-public class TransactionStatusDTO { }
+public class TransactionStatusDTO
+{
+    public string TransactionTimestamp { get;  set; }
+    public string TransactionId { get;  set; }
+    public object Status { get;  set; }
+}
 
-public class TransactionRequest { }
+
 
 public class RemittanceResultDTO
 {
@@ -184,4 +238,5 @@ public class TransactionStatusCallback
 {
     public string TransactionId { get; set; }
     public string TransactionTimestamp { get; set; }
+    public object Status { get;  set; }
 }

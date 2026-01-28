@@ -1,5 +1,6 @@
 ﻿using TeamChoice.WebApis.Contracts.DTOs;
 using TeamChoice.WebApis.Contracts.Exchanges;
+using TeamChoice.WebApis.Domain.Models;
 
 namespace TeamChoice.WebApis.Application.Mappers;
 

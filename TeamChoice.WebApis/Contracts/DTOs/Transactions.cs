@@ -3,22 +3,22 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace TeamChoice.WebApis.Contracts.DTOs;
 
-public record TransactionRequestDto
+public class TransactionRequestDto
 {
-    public string? TransactionId { get; init; }
-    public string PartnerReference { get; init; } = default!;
-    public DateTime Timestamp { get; init; }
+    public string? TransactionId { get; set; }
+    public string PartnerReference { get; set; } = default!;
+    public DateTime Timestamp { get; set; }
 
-    public string Purpose { get; init; } = default!;
-    public string Remarks { get; init; } = default!;
-    public string Relationship { get; init; } = default!;
-    public string? EmployeeId { get; init; }
+    public string Purpose { get; set; } = default!;
+    public string Remarks { get; set; } = default!;
+    public string Relationship { get; set; } = default!;
+    public string? EmployeeId { get; set; }
 
-    public PaymentDto Payment { get; init; } = default!;
-    public PersonDto Sender { get; init; } = default!;
-    public PersonDto Recipient { get; init; } = default!;
-    public LocationDto SendingLocation { get; init; } = default!;
-    public LocationDto? PayeeLocation { get; init; }
+    public PaymentDto Payment { get; set; } = default!;
+    public PersonDto Sender { get; set; } = default!;
+    public PersonDto Recipient { get; set; } = default!;
+    public LocationDto SendingLocation { get; set; } = default!;
+    public LocationDto? PayeeLocation { get; set; }
     public string? TawakalTxnRef { get;  set; }
 }
 
@@ -54,12 +54,13 @@ public record TransactionStatusDto(
     string Message
 );
 
-public record LocationDto
+public class LocationDto
 {
-    public string LocationCode { get; init; } = default!;
-    public string? LocationName { get; init; }
-    public string? CountryCode { get; init; }
-    public string? City { get; init; }
+    public string LocationCode { get; set; } = default!;
+    public string? LocationName { get; set; }
+    public string? CountryCode { get; set; }
+    public string? City { get; set; }
+    public string? LocationId { get;  set; }
 }
 
 public record PersonDto
@@ -76,16 +77,16 @@ public record PersonDto
     public string? IdentificationNumber { get; init; }
 }
 
-public record PaymentDto
+public class PaymentDto
 {
-    public string ServiceCode { get; init; } = default!;
-    public double SendingAmount { get; init; }
-    public string SendingCurrency { get; init; } = default!;
-    public double? RecipientAmount { get; init; }
-    public string RecipientCurrency { get; init; } = default!;
+    public string ServiceCode { get; set; } = default!;
+    public double SendingAmount { get; set; }
+    public string SendingCurrency { get; set; } = default!;
+    public double? RecipientAmount { get; set; }
+    public string RecipientCurrency { get; set; } = default!;
 
-    public double? ExchangeRate { get; init; }
-    public double? Fee { get; init; }
+    public double? ExchangeRate { get; set; }
+    public double? Fee { get; set; }
 }
 
 public class AccountsLookupRequest
