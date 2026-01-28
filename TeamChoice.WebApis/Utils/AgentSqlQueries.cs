@@ -59,5 +59,22 @@
 
         public const string GET_LOCID_BY_SERVICE_CODE = @"
             SELECT TOP (1) LocId FROM LocationService WHERE ServiceCode = @serviceCode";
+
+        public const string GET_LOCSERVICES_BY_LocId = @"
+            SELECT
+                ServiceID,
+                ProviderName,
+                ServiceType,
+                ServiceName,
+                ServiceCode,
+                MinAmount,
+                MaxAmount,
+                CurrencyCode,
+                CountryCode,
+                Description,
+                Status
+            FROM LocationService s
+            WHERE
+                (@locId IS NULL ORLocId = @locId)";
     }
 }
