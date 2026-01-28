@@ -106,7 +106,7 @@ namespace TeamChoice.WebApis.Application.Services
 
                 // Execute Query and Map Result
                 return await _databaseService.QueryOneAsync(
-                    RemittanceSql.CALL_PROCEDURE,
+                    Utils.RemittanceSql.CALL_PROCEDURE,
                     parameters,
                     reader => new RemittanceResultDTO
                     {

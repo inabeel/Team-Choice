@@ -45,7 +45,7 @@ public sealed class TransactionValidator : ITransactionValidator
 
         Require(payment.ServiceCode, "Payment.ServiceCode");
 
-        if (payment.SendingAmount <= 0)
+        if (payment.SendingAmount < 0)
             throw new TransactionValidationException("Sending amount must be greater than zero");
     }
 
