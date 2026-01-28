@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
+using System.Threading.RateLimiting;
 using TeamChoice.WebApis.Application;
 using TeamChoice.WebApis.Application.Facades;
 using TeamChoice.WebApis.Application.Interfaces.Repositories;
@@ -33,9 +35,34 @@ public class Program
 
         // Add services to the container.
 
-         builder.AddJwtAuthConfigurations();
+        builder.AddJwtAuthConfigurations();
 
         builder.Services.AddControllers();
+
+        // --- Rate Limiting Configuration (Loaded from appsettings) ---
+        var rateLimitSettings = new RateLimitSettings();
+        builder.Configuration.GetSection("RateLimitSettings").Bind(rateLimitSettings);
+
+        builder.Services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+            {
+                var userIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                return RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: userIp,
+                    factory: partition => new FixedWindowRateLimiterOptions
+                    {
+                        AutoReplenishment = true,
+                        PermitLimit = rateLimitSettings.PermitLimit,
+                        Window = TimeSpan.FromMinutes(rateLimitSettings.WindowMinutes),
+                        QueueLimit = rateLimitSettings.QueueLimit,
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+                    });
+            });
+        });
 
         // --- Configuration ---
         builder.Services.Configure<ClientUrlProperties>(
@@ -136,6 +163,9 @@ public class Program
 
         app.UseHttpsRedirection();
 
+        // --- Enable Rate Limiting Middleware ---
+        app.UseRateLimiter();
+
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -143,4 +173,12 @@ public class Program
 
         app.Run();
     }
+}
+
+// Simple Helper class to bind configuration
+public class RateLimitSettings
+{
+    public int PermitLimit { get; set; } = 100;
+    public double WindowMinutes { get; set; } = 1;
+    public int QueueLimit { get; set; } = 2;
 }
