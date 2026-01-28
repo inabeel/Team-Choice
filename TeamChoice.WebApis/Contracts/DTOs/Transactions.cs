@@ -56,7 +56,7 @@ public record TransactionStatusDto(
 
 public class LocationDto
 {
-    public string LocationCode { get; set; } = default!;
+    public string? LocationCode { get; set; } = default!;
     public string? LocationName { get; set; }
     public string? CountryCode { get; set; }
     public string? City { get; set; }
@@ -69,7 +69,7 @@ public record PersonDto
     public string LastName { get; init; } = default!;
     public string? MiddleName { get; init; }
 
-    public string PhoneNumber { get; init; } = default!;
+    public string? PhoneNumber { get; init; } = default!;
     public string? Email { get; init; }
 
     public string? Nationality { get; init; }
@@ -79,11 +79,11 @@ public record PersonDto
 
 public class PaymentDto
 {
-    public string ServiceCode { get; set; } = default!;
-    public double SendingAmount { get; set; }
-    public string SendingCurrency { get; set; } = default!;
+    public string? ServiceCode { get; set; } = default!;
+    public double? SendingAmount { get; set; }
+    public string? SendingCurrency { get; set; } = default!;
     public double? RecipientAmount { get; set; }
-    public string RecipientCurrency { get; set; } = default!;
+    public string? RecipientCurrency { get; set; } = default!;
 
     public double? ExchangeRate { get; set; }
     public double? Fee { get; set; }

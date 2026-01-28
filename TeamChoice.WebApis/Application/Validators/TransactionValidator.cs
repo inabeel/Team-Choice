@@ -81,9 +81,9 @@ public sealed class TransactionValidator : ITransactionValidator
 
     private static void Require(string? value, string fieldName)
     {
-        if (string.IsNullOrWhiteSpace(value))
-            throw new TransactionValidationException(
-                $"Field '{fieldName}' is required");
+        //if (string.IsNullOrWhiteSpace(value))
+        //    throw new TransactionValidationException(
+        //        $"Field '{fieldName}' is required");
     }
 }
 
