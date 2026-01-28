@@ -120,7 +120,7 @@ namespace TeamChoice.WebApis.Application.Mappers
             recipient.FirstName = requestDTO.Recipient.FirstName;
             recipient.MiddleName = requestDTO.Recipient.MiddleName;
             recipient.LastName = requestDTO.Recipient.LastName;
-            recipient.MobilePhone = requestDTO.Recipient.Mobile;
+            recipient.MobilePhone = requestDTO.Recipient.MobilePhone;
 
             //if (!string.IsNullOrEmpty(requestDTO.Recipient.Address))
             //{

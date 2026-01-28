@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Swashbuckle.AspNetCore.Annotations;
+using static TeamChoice.WebApis.Domain.Models.TransactionRequest;
 
 namespace TeamChoice.WebApis.Contracts.DTOs;
 
@@ -74,6 +75,9 @@ public record PersonDto
     public string? Nationality { get; init; }
     public string? IdentificationType { get; init; }
     public string? IdentificationNumber { get; init; }
+    public string MobilePhone { get;  set; }
+    public AddressObj Address { get;  set; }
+    public IdentityDocumentObj IdentityDocument { get;  set; }
 }
 
 public class PaymentDto
@@ -86,6 +90,7 @@ public class PaymentDto
 
     public double? ExchangeRate { get; set; }
     public double? Fee { get; set; }
+    public string ServiceType { get;  set; }
 }
 
 public class AccountsLookupRequest

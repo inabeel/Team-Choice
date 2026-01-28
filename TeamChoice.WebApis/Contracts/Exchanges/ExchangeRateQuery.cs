@@ -85,13 +85,13 @@ public class TransactionRequestDTO
     public string EmployeeId { get; set; }
 
     [Required(ErrorMessage = "payment is required")]
-    public PaymentDto Payment { get; set; }
+    public PaymentObj Payment { get; set; }
 
     [Required(ErrorMessage = "sender is required")]
     public PersonDto Sender { get; set; }
 
     [Required(ErrorMessage = "recipient is required")]
-    public RecipientDto Recipient { get; set; }
+    public RecipientObj Recipient { get; set; }
 
     [Required(ErrorMessage = "sendingLocation is required")]
     public LocationDto SendingLocation { get; set; }
@@ -164,17 +164,80 @@ public class RemittanceRequest
     public decimal FxAmount { get; set; }
     public decimal TrnsComm { get; set; }
     public string PaymentMode { get; set; }
+    public string SndLocCode { get;  set; }
 }
 
 public class SmtTransaction
 {
+    public string TrnsCode { get; set; }
+    public string AgtRefNo { get; set; }
+    public string TrnsSrvType { get; set; }
+    public DateTime? TrnsDate { get; set; }
+    public string TrnsRemarks { get; set; }
+    public string RelCode { get; set; }
+    public string TrnsUser { get; set; }
+
+    // Sender Details
+    public string RemFirstName { get; set; }
+    public string RemMiddleName { get; set; }
+    public string RemLastName { get; set; }
+    public string RemMobile { get; set; }
+    public string RemCity { get; set; }
+    public string RemCustCode { get; set; } // Referenced in comments/Java logic
+    public string RemIDType { get; set; }
+    public string RemIDNO { get; set; }
+    public string RemNatCode { get; set; }
+    public string RemDOB { get; set; }
+    public DateTime? RemIDExpDate { get; set; }
+
+    // Recipient Details
+    public string BenFirstName { get; set; }
+    public string BenMiddleName { get; set; }
+    public string BenLastName { get; set; }
+    public string BenMobile { get; set; }
+    public string RemPhone { get; set; } // Mapped from BenMobile in logic
+    public string BenIDType { get; set; }
+    public string BenIDNO { get; set; }
+    public string BenNatCode { get; set; }
+    public DateTime? BenIDExpDate { get; set; }
+
+    // Location & Payment
+    public string SndLocCode { get; set; }
+    public string RecLocCode { get; set; }
+    public string TrnsSrvCode { get; set; }
+    public string PayMode { get; set; }
+    public string PaymentMode { get; set; }
+    public string PayCurCode { get; set; }
+
+    // Financials
+    public decimal? FxAmount { get; set; }
+    public decimal? LcyAmount { get; set; }
+    public decimal? TrnsComm { get; set; }
+    public decimal? LcyTotAmount { get; set; }
+    public decimal? RecdRate { get; set; }
+
+    // Status fields (often used in SMT context)
     public string TrnsStatus { get; set; }
     public string TrnsSubStatus { get; set; }
     public string ActualStatus { get; set; }
-    public string AgtRefNo { get; set; }
 }
 
-public class Transaction { }
+public class Transaction
+{
+    public string TransactionId { get; set; }
+    public string PartnerReference { get; set; }
+    public DateTime Timestamp { get; set; }
+    public string Purpose { get; set; }
+    public string Remarks { get; set; }
+    public string Relationship { get; set; }
+    public string EmployeeId { get; set; }
+
+    public PaymentObj Payment { get; set; }
+    public PersonDto Sender { get; set; }
+    public RecipientObj Recipient { get; set; }
+    public LocationDto SendingLocation { get; set; }
+    public PayeeLocationDto PayeeLocation { get; set; }
+}
 
 public class TeamsNotificationRequest
 {

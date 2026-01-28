@@ -1,11 +1,13 @@
 ﻿using TeamChoice.WebApis.Contracts.DTOs;
+using TeamChoice.WebApis.Contracts.Exchanges;
 using TeamChoice.WebApis.Domain.Exceptions;
+using static TeamChoice.WebApis.Domain.Models.TransactionRequest;
 
 namespace TeamChoice.WebApis.Application.Validators;
 
 public interface ITransactionValidator
 {
-    void Validate(TransactionRequestDto request);
+    void Validate(TransactionRequestDTO request);
 }
 
 /// <summary>
@@ -13,7 +15,7 @@ public interface ITransactionValidator
 /// </summary>
 public sealed class TransactionValidator : ITransactionValidator
 {
-    public void Validate(TransactionRequestDto request)
+    public void Validate(TransactionRequestDTO request)
     {
         if (request is null)
             throw new TransactionValidationException("Transaction request cannot be null");
@@ -29,14 +31,14 @@ public sealed class TransactionValidator : ITransactionValidator
     // Validation Rules
     // --------------------------------------------------------------------
 
-    private static void ValidateCoreFields(TransactionRequestDto request)
+    private static void ValidateCoreFields(TransactionRequestDTO request)
     {
         Require(request.PartnerReference, "PartnerReference");
         Require(request.Purpose, "Purpose");
         Require(request.Relationship, "Relationship");
     }
 
-    private static void ValidatePayment(PaymentDto payment)
+    private static void ValidatePayment(PaymentObj payment)
     {
         if (payment is null)
             throw new TransactionValidationException("Payment details are required");
@@ -57,14 +59,14 @@ public sealed class TransactionValidator : ITransactionValidator
         Require(sender.PhoneNumber, "Sender.PhoneNumber");
     }
 
-    private static void ValidateRecipient(PersonDto recipient)
+    private static void ValidateRecipient(RecipientObj recipient)
     {
         if (recipient is null)
             throw new TransactionValidationException("Recipient details are required");
 
         Require(recipient.FirstName, "Recipient.FirstName");
         Require(recipient.LastName, "Recipient.LastName");
-        Require(recipient.PhoneNumber, "Recipient.PhoneNumber");
+        Require(recipient.MobilePhone, "Recipient.PhoneNumber");
     }
 
     private static void ValidateLocation(LocationDto location)

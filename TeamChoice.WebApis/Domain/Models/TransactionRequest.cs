@@ -31,6 +31,7 @@ namespace TeamChoice.WebApis.Domain.Models
             public decimal RecipientAmount { get; set; }
             public decimal ExchangeRate { get; set; }
             public string Fees { get; set; }
+            public int SendingAmount { get;  set; }
         }
 
         public class SenderObj
@@ -52,7 +53,7 @@ namespace TeamChoice.WebApis.Domain.Models
             public string MobilePhone { get; set; }
             public IdentityDocumentObj IdentityDocument { get; set; }
             public AddressObj Address { get; set; }
-            public string Mobile { get;  set; }
+           
         }
 
         public class SendingLocationObj

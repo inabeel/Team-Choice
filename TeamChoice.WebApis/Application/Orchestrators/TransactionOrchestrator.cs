@@ -10,7 +10,7 @@ namespace TeamChoice.WebApis.Application.Orchestrators;
 
 public interface ITransactionOrchestrator
 {
-    Task<RemittanceResultDTO> HandleAsync(TransactionRequestDto requestDTO);
+    Task<RemittanceResultDTO> HandleAsync(TransactionRequestDTO requestDTO);
 }
 
 
@@ -42,7 +42,7 @@ public interface ITransactionOrchestrator
             _logger = logger;
         }
 
-        public async Task<RemittanceResultDTO> HandleAsync(TransactionRequestDto requestDTO)
+        public async Task<RemittanceResultDTO> HandleAsync(TransactionRequestDTO requestDTO)
         {
             try
             {
@@ -89,7 +89,7 @@ public interface ITransactionOrchestrator
             }
         }
 
-        private async Task<string> ResolveServiceTypeAsync(TransactionRequestDto requestDTO)
+        private async Task<string> ResolveServiceTypeAsync(TransactionRequestDTO requestDTO)
         {
             string serviceCode = requestDTO.Payment?.ServiceCode?.Trim() ?? "";
 
@@ -160,13 +160,15 @@ public interface ITransactionOrchestrator
             }
         }
 
-        private TransactionRequestDTOCopy MapToTransactionRequestDTOCopy(TransactionRequestDto source)
+        private TransactionRequestDTOCopy MapToTransactionRequestDTOCopy(TransactionRequestDTO source)
         {
             // Simple mapping using JSON serialization to deep copy/map similar structures
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(source);
             return Newtonsoft.Json.JsonConvert.DeserializeObject<TransactionRequestDTOCopy>(json);
         }
-    }
+
+
+}
 
 
 public sealed record TransactionOrchestrationResult(string Reference);

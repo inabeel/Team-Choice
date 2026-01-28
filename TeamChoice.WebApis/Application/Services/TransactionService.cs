@@ -7,7 +7,7 @@ namespace TeamChoice.WebApis.Application.Services
 {
     public interface ITransactionService
     {
-        Task<RemittanceResultDTO> ValidateAndSaveTransactionAsync(TransactionRequestDto requestDTO, string serviceType);
+        Task<RemittanceResultDTO> ValidateAndSaveTransactionAsync(TransactionRequestDTO requestDTO, string serviceType);
     }
 
     public class TransactionService : ITransactionService
@@ -28,7 +28,7 @@ namespace TeamChoice.WebApis.Application.Services
             _logger = logger;
         }
 
-        public async Task<RemittanceResultDTO> ValidateAndSaveTransactionAsync(TransactionRequestDto requestDTO, string serviceType)
+        public async Task<RemittanceResultDTO> ValidateAndSaveTransactionAsync(TransactionRequestDTO requestDTO, string serviceType)
         {
             _logger.LogInformation("🔍 Validating transaction request: {@Request}", requestDTO);
 

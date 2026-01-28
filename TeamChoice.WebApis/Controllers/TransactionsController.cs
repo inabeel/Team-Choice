@@ -3,6 +3,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using TeamChoice.WebApis.Application.Facades;
 using TeamChoice.WebApis.Application.Orchestrators;
 using TeamChoice.WebApis.Contracts.DTOs;
+using TeamChoice.WebApis.Contracts.Exchanges;
 
 namespace TeamChoice.WebApis.Controllers;
 
@@ -31,7 +32,7 @@ public class TransactionsController : BaseApiController
 
     [HttpPost]
     [ProducesResponseType(typeof(HttpResponseDto<TransactionResultDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> CreateTransactionAsync([FromBody] TransactionRequestDto request)
+    public async Task<IActionResult> CreateTransactionAsync([FromBody] TransactionRequestDTO request)
     {
         // 1️⃣ Call orchestrator (validation + processing happen inside)
         var orchestrationResult =

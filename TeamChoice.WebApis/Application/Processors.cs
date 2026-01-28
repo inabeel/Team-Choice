@@ -7,9 +7,9 @@ namespace TeamChoice.WebApis.Application;
 public interface ITransactionProcessor
 {
     Task<TransactionOrchestrationResult> ProcessAsync(
-        TransactionRequestDto request);
+        TransactionRequestDTO request);
 
-    PartnerTransaction BuildPartnerTransaction(TransactionRequestDto request);
+    PartnerTransaction BuildPartnerTransaction(TransactionRequestDTO request);
 }
 
 /// <summary>
@@ -19,7 +19,7 @@ public sealed class TransactionProcessor : ITransactionProcessor
 {
     private const string StatusPending = "PENDING";
 
-    public PartnerTransaction BuildPartnerTransaction(TransactionRequestDto request)
+    public PartnerTransaction BuildPartnerTransaction(TransactionRequestDTO request)
     {
         // NOTE: Preserving Java behavior exactly
         var transactionDate = "2025-10-17T02:44:00Z";
@@ -34,7 +34,7 @@ public sealed class TransactionProcessor : ITransactionProcessor
         };
     }
 
-    public Task<TransactionOrchestrationResult> ProcessAsync(TransactionRequestDto request)
+    public Task<TransactionOrchestrationResult> ProcessAsync(TransactionRequestDTO request)
     {
         throw new NotImplementedException();
     }
