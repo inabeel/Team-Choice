@@ -75,9 +75,9 @@ public record PersonDto
     public string? Nationality { get; init; }
     public string? IdentificationType { get; init; }
     public string? IdentificationNumber { get; init; }
-    public string MobilePhone { get;  set; }
-    public AddressObj Address { get;  set; }
-    public IdentityDocumentObj IdentityDocument { get;  set; }
+    public string? MobilePhone { get;  set; }
+    public AddressObj? Address { get;  set; }
+    public IdentityDocumentObj? IdentityDocument { get;  set; }
 }
 
 public class PaymentDto

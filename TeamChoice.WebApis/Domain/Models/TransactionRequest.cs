@@ -69,19 +69,19 @@ namespace TeamChoice.WebApis.Domain.Models
 
         public class IdentityDocumentObj
         {
-            public string DocumentType { get; set; }
-            public string DocumentNumber { get; set; }
-            public string ExpirationDate { get; set; }
-            public string CountryRegion { get; set; }
-            public string CountryOfOrigin { get; set; }
-            public string DateOfBirth { get; set; }
+            public string? DocumentType { get; set; }
+            public string? DocumentNumber { get; set; }
+            public string? ExpirationDate { get; set; }
+            public string? CountryRegion { get; set; }
+            public string? CountryOfOrigin { get; set; }
+            public string? DateOfBirth { get; set; }
         }
 
         public class AddressObj
         {
-            public string Street { get; set; }
-            public string City { get; set; }
-            public string Country { get; set; }
+            public string? Street { get; set; }
+            public string? City { get; set; }
+            public string? Country { get; set; }
         }
     }
 }

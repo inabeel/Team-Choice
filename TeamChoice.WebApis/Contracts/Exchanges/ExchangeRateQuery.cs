@@ -65,42 +65,42 @@ public sealed class PartnerTransaction
 }
 public class TransactionRequestDTO
 {
-    public string TransactionId { get; set; }
+    public string? TransactionId { get; set; }
 
     [Required(ErrorMessage = "partnerReference is required")]
-    public string PartnerReference { get; set; }
+    public string? PartnerReference { get; set; }
 
     [Required(ErrorMessage = "timestamp is required")]
     public DateTime Timestamp { get; set; }
 
     [Required(ErrorMessage = "purpose is required")]
-    public string Purpose { get; set; }
+    public string? Purpose { get; set; }
 
     [MaxLength(255)]
-    public string Remarks { get; set; }
+    public string? Remarks { get; set; }
 
     [Required(ErrorMessage = "relationship is required")]
     public string Relationship { get; set; }
 
-    public string EmployeeId { get; set; }
+    public string? EmployeeId { get; set; }
 
     [Required(ErrorMessage = "payment is required")]
-    public PaymentObj Payment { get; set; }
+    public PaymentObj? Payment { get; set; }
 
     [Required(ErrorMessage = "sender is required")]
-    public PersonDto Sender { get; set; }
+    public PersonDto? Sender { get; set; }
 
     [Required(ErrorMessage = "recipient is required")]
-    public RecipientObj Recipient { get; set; }
+    public RecipientObj? Recipient { get; set; }
 
     [Required(ErrorMessage = "sendingLocation is required")]
-    public LocationDto SendingLocation { get; set; }
+    public LocationDto? SendingLocation { get; set; }
 
-    public PayeeLocationDto PayeeLocation { get; set; }
+    public PayeeLocationDto? PayeeLocation { get; set; }
 }
 public class PayeeLocationDto : LocationDto
 {
-    public string Share { get; set; }
+    public string? Share { get; set; }
 }
 public class TransactionRequestDTOCopy
 {
