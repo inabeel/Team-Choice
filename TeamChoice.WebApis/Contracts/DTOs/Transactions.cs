@@ -22,10 +22,9 @@ public class TransactionRequestDto
     public string? TawakalTxnRef { get;  set; }
 }
 
-public record TransactionStatusRequestDto(
-    string TransactionReference
-)
+public class TransactionStatusRequestDto
 {
+    public string? TransactionReference { get; set; }
     public string? TawakalTxnRef { get;  set; }
 }
 
