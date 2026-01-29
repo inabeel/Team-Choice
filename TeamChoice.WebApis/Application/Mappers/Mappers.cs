@@ -54,13 +54,19 @@ public static class TransactionSmtMapperUtil
     // For production, injecting ILogger<T> into a non-static service wrapping this logic is better,
     // but keeping it static to match Java structure.
 
+    /**
+     * Maps a {@link Transaction} to a {@link SmtTransaction} format for internal processing.
+     *
+     * @param transaction the source transaction
+     * @return the mapped SMT transaction
+     */
     public static SmtTransaction ToSmtTransaction(Transaction transaction)
     {
         if (transaction == null)
         {
-            // In a real app, use a proper logging mechanism
-            Console.WriteLine("Null transaction provided to mapper");
-            return null;
+            // "Null transaction provided to mapper"
+            throw new ArgumentNullException(nameof(transaction),
+                "Transaction cannot be null when mapping to SMT transaction");
         }
 
         var tx = new SmtTransaction();
@@ -86,10 +92,7 @@ public static class TransactionSmtMapperUtil
             if (sender.Address != null)
             {
                 tx.RemCity = sender.Address.City;
-                // Assuming PostalCode isn't in AddressObj yet, based on previous steps. 
-                // Java used sender.getAddress().getPostalCode() which mapped to RemCustCode
-                // I'll leave it null or map if added to model later.
-                // tx.RemCustCode = sender.Address.PostalCode; 
+                tx.RemCustCode = sender.Address?.PostalCode;
             }
 
             if (sender.IdentityDocument != null)
@@ -185,7 +188,8 @@ public static class TransactionSmtMapperUtil
     {
         // C# DateTime is structurally similar to LocalDateTime. 
         // If it's default(DateTime), return null.
-        return dateTime == default ? null : dateTime;
+        if (dateTime == default) return null;
+        return DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
     }
 
     private static decimal? ToDecimalSafe(string value)
