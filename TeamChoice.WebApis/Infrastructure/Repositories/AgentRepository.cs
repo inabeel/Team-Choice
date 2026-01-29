@@ -23,7 +23,7 @@ public class AgentRepository : IAgentRepository
         return await _databaseService.QueryOneAsync(
             AgentSqlQueries.FIND_RECEIVE_COMMISSION_BY_AGENT_CODE,
             parameters,
-            reader => Convert.ToDecimal(reader["AMOUNT"])
+            reader => Convert.ToDecimal(reader["AMOUNT"]), CancellationToken.None
         );
     }
 
@@ -44,7 +44,7 @@ public class AgentRepository : IAgentRepository
                 Password = reader["Password"] as string,
                 SecretKey = reader["SecretKey"] as string,
                 BaseURL = reader["BaseURL"] as string
-            }
+            }, CancellationToken.None
         );
     }
 
@@ -64,7 +64,7 @@ public class AgentRepository : IAgentRepository
             {
                 EtbIr = Convert.ToDecimal(reader["etbIr"]),
                 Usd = Convert.ToDecimal(reader["usd"])
-            }
+            }, CancellationToken.None
         );
     }
 
@@ -75,7 +75,8 @@ public class AgentRepository : IAgentRepository
         return await _databaseService.QueryOneAsync(
             AgentSqlQueries.FIND_SMT_COMMISSION_BY_TRNS_CODE,
             parameters,
-            reader => Convert.ToDecimal(reader["SMT_TOTCOM"])
+            reader => Convert.ToDecimal(reader["SMT_TOTCOM"]),
+            CancellationToken.None
         );
     }
 
@@ -86,7 +87,8 @@ public class AgentRepository : IAgentRepository
         return await _databaseService.QueryOneAsync<int?>(
             AgentSqlQueries.FIND_BANK_SERVICETYPE,
             parameters,
-            reader => reader["DeliveryTypeID"] != DBNull.Value ? Convert.ToInt32(reader["DeliveryTypeID"]) : (int?)null
+            reader => reader["DeliveryTypeID"] != DBNull.Value ? Convert.ToInt32(reader["DeliveryTypeID"]) : (int?)null,
+            CancellationToken.None
         );
     }
 
@@ -97,7 +99,8 @@ public class AgentRepository : IAgentRepository
         return await _databaseService.QueryOneAsync(
             AgentSqlQueries.FIND_TRNS_CODE_FROM_TRANSACTIONS,
             parameters,
-            reader => reader["TrnsCode"] as string
+            reader => reader["TrnsCode"] as string,
+            CancellationToken.None
         );
     }
 
@@ -108,8 +111,10 @@ public class AgentRepository : IAgentRepository
         var result = await _databaseService.QueryOneAsync(
             AgentSqlQueries.VALIDATE_TRANSACTION_BY_PARTNER_REFERENCE,
             parameters,
-            reader => reader["partnerCode"] as string
+            reader => reader["partnerCode"] as string,
+            CancellationToken.None
         );
+
         return result ?? "NOT_FOUND";
     }
 
@@ -120,7 +125,8 @@ public class AgentRepository : IAgentRepository
         var result = await _databaseService.QueryOneAsync(
             AgentSqlQueries.VALIDATE_TRANSACTION_STATUS,
             parameters,
-            reader => reader["TrnsStatus"] as string
+            reader => reader["TrnsStatus"] as string,
+            CancellationToken.None
         );
         return result ?? "NOT_FOUND";
     }
@@ -136,7 +142,7 @@ public class AgentRepository : IAgentRepository
         { "@partnerCode", p.PartnerCode }
     };
 
-        return await _databaseService.ExecuteNonQueryAsync(AgentSqlQueries.INSERT_PARTNER_TRANSACTION, parameters);
+        return await _databaseService.ExecuteNonQueryAsync(AgentSqlQueries.INSERT_PARTNER_TRANSACTION, parameters, CancellationToken.None);
     }
 
     public async Task<long> UpdateAfterPayingTransactionAsync(string trnsCode, string newStatus)
@@ -147,9 +153,9 @@ public class AgentRepository : IAgentRepository
         { "@agtRefNo", trnsCode }
     };
 
-        return await _databaseService.ExecuteNonQueryAsync(AgentSqlQueries.UPDATE_TRANSACTION_STATUS, parameters);
+        return await _databaseService.ExecuteNonQueryAsync(AgentSqlQueries.UPDATE_TRANSACTION_STATUS, parameters, CancellationToken.None);
     }
-
+        
     public async Task<SMTMstMpUser> GetUserByLocCodeAsync(string locCode)
     {
         var parameters = new Dictionary<string, object> { { "@loccode", locCode } };
@@ -181,7 +187,7 @@ public class AgentRepository : IAgentRepository
                 AddInfo4 = reader["ADDINFO4"] as string,
                 AddInfo5 = reader["ADDINFO5"] as string,
                 IsRate = reader["ISRATE"] as string
-            }
+            }, CancellationToken.None
         );
     }
 
@@ -192,7 +198,8 @@ public class AgentRepository : IAgentRepository
         var result = await _databaseService.QueryOneAsync(
             AgentSqlQueries.GET_REGLOCCODE,
             parameters,
-            reader => reader["ExternalLocId"] as string
+            reader => reader["ExternalLocId"] as string,
+            CancellationToken.None
         );
         return result ?? "NOT_FOUND";
     }
@@ -204,7 +211,8 @@ public class AgentRepository : IAgentRepository
         return await _databaseService.QueryOneAsync<int?>(
             AgentSqlQueries.GET_LOCID_BY_SERVICE_CODE,
             parameters,
-            reader => reader["LocId"] != DBNull.Value ? Convert.ToInt32(reader["LocId"]) : (int?)null
+            reader => reader["LocId"] != DBNull.Value ? Convert.ToInt32(reader["LocId"]) : (int?)null,
+            CancellationToken.None
         );
     }
 }

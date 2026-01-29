@@ -73,9 +73,9 @@ public class TplusLookupStrategy : IProviderLookupStrategy
 
     private TplusAccount FindPersonalAccount(TplusApiResponse response)
     {
-        if (response.Accounts == null) return null;
+        if (response.TPlusAccValidate == null) return null;
 
-        return response.Accounts
+        return response.TPlusAccValidate
             .FirstOrDefault(acc => "Personal".Equals(acc.AccountType, StringComparison.OrdinalIgnoreCase));
     }
 

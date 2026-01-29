@@ -111,7 +111,7 @@ public static class RateCalculator
                     ExchangeRate = commission.ExchangeRate,
                     TransactionFee = commission.TransactionFee
                 },
-                Recipient = new RecipientDto
+                Recipient = new ExchangeRecipientDto
                 {
                     Amount = commission.Amount,
                     CurrencyCode = commission.ReceivingCurrencyCode

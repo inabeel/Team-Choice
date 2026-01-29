@@ -1,27 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using TeamChoice.WebApis.Application.Facades;
-using TeamChoice.WebApis.Application.Orchestrators;
 using TeamChoice.WebApis.Contracts.DTOs;
-using TeamChoice.WebApis.Contracts.Exchanges;
+using TeamChoice.WebApis.Contracts.DTOs.Transactions;
 
 namespace TeamChoice.WebApis.Controllers;
 
 [Route("api/v1/transaction")]
 public class TransactionsController : BaseApiController
 {
-    private readonly ITransactionOrchestrator _transactionOrchestrator;
-    private readonly ICancellationOrchestrator _cancellationOrchestrator;
-    private readonly ITransactionValidationFacade _transactionValidationFacade;
+    private readonly ITransactionFacade _facade;
 
-    public TransactionsController(
-        ITransactionOrchestrator transactionOrchestrator, 
-        ICancellationOrchestrator cancellationOrchestrator,
-        ITransactionValidationFacade transactionValidationFacade)
+    public TransactionsController(ITransactionFacade facade)
     {
-        _transactionOrchestrator = transactionOrchestrator;
-        _cancellationOrchestrator = cancellationOrchestrator;
-        _transactionValidationFacade = transactionValidationFacade;
+        _facade = facade;
     }
 
     [SwaggerOperation(
@@ -32,18 +24,9 @@ public class TransactionsController : BaseApiController
 
     [HttpPost]
     [ProducesResponseType(typeof(HttpResponseDto<TransactionResultDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> CreateTransactionAsync([FromBody] TransactionRequestDTO request)
+    public async Task<IActionResult> CreateTransactionAsync([FromBody] TransactionRequestDto request)
     {
-        // 1️⃣ Call orchestrator (validation + processing happen inside)
-        var orchestrationResult =
-            await _transactionOrchestrator.HandleAsync(request);
-
-        // TODO: transaction processing
-        var result = new TransactionResultDto
-        {
-            Status = "Pending",
-            TawakalTxnRef = orchestrationResult.Reference
-        };
+        var result = await _facade.CreateAsync(request);
 
         return OkResponse(result);
     }
@@ -52,8 +35,9 @@ public class TransactionsController : BaseApiController
     [ProducesResponseType(typeof(HttpResponseDto<TransactionResultDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ValidateTransactionStatusAsync([FromBody] TransactionStatusRequestDto request)
     {
-        var response = await _transactionValidationFacade.ValidateAsync(request);
-        return OkResponse(response);
+        var status = await _facade.ValidateStatusAsync(request);
+
+        return OkResponse(status);
     }
 
     [HttpPost("cancel")]
@@ -65,9 +49,9 @@ public class TransactionsController : BaseApiController
     )]
 
     [ProducesResponseType(typeof(HttpResponseDto<TransactionResultDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Cancel([FromBody] CancelTransactionDto request)
+    public async Task<IActionResult> Cancel([FromBody] CancelTransactionRequest request)
     {
-        var result = await _cancellationOrchestrator.ExecuteAsync(request);
+        var result = await _facade.CancelAsync(request);
 
         return OkResponse(result);
     }

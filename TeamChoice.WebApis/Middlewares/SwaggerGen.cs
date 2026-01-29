@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using System.Runtime.CompilerServices;
 
 namespace TeamChoice.WebApis.Middlewares;
@@ -11,6 +12,8 @@ public static class SwaggerGen
 
         services.AddSwaggerGen(c =>
         {
+            c.CustomSchemaIds(type => type.FullName);
+
             c.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "Tawakal API",

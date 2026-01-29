@@ -42,7 +42,7 @@ public class RateRepository : IRateRepository
                     SendingCurrencyCode = reader["SendingCurrencyCode"] as string,
                     ExchangeRate = Convert.ToDecimal(reader["ExchangeRate"]),
                     TransactionFee = Convert.ToDecimal(reader["TransactionFee"])
-                }
+                }, CancellationToken.None
             );
         }
         catch (Exception ex)

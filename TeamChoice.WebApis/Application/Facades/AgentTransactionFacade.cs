@@ -1,8 +1,8 @@
 ﻿using TeamChoice.WebApis.Application.Interfaces.Repositories;
 using TeamChoice.WebApis.Application.Interfaces.Services;
-using TeamChoice.WebApis.Application.Mappers;
 using TeamChoice.WebApis.Contracts.Exchanges;
 using TeamChoice.WebApis.Domain.Models;
+using TeamChoice.WebApis.Infrastructure.Transport;
 
 namespace TeamChoice.WebApis.Application.Facades;
 

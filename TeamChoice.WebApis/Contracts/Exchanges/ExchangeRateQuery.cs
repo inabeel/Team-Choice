@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using TeamChoice.WebApis.Contracts.DTOs;
-using static TeamChoice.WebApis.Domain.Models.TransactionRequest;
+using static TeamChoice.WebApis.Domain.Models.Transactions.TransactionRequest;
 
 namespace TeamChoice.WebApis.Contracts.Exchanges;
 
@@ -63,54 +63,10 @@ public sealed class PartnerTransaction
     public string Status { get; init; } = default!;
     public string? Payload { get; init; }
 }
-public class TransactionRequestDTO
-{
-    public string? TransactionId { get; set; }
 
-    [Required(ErrorMessage = "partnerReference is required")]
-    public string? PartnerReference { get; set; }
-
-    [Required(ErrorMessage = "timestamp is required")]
-    public DateTime Timestamp { get; set; }
-
-    [Required(ErrorMessage = "purpose is required")]
-    public string? Purpose { get; set; }
-
-    [MaxLength(255)]
-    public string? Remarks { get; set; }
-
-    [Required(ErrorMessage = "relationship is required")]
-    public string Relationship { get; set; }
-
-    public string? EmployeeId { get; set; }
-
-    [Required(ErrorMessage = "payment is required")]
-    public PaymentObj? Payment { get; set; }
-
-    [Required(ErrorMessage = "sender is required")]
-    public PersonDto? Sender { get; set; }
-
-    [Required(ErrorMessage = "recipient is required")]
-    public RecipientObj? Recipient { get; set; }
-
-    [Required(ErrorMessage = "sendingLocation is required")]
-    public LocationDto? SendingLocation { get; set; }
-
-    public PayeeLocationDto? PayeeLocation { get; set; }
-}
 public class PayeeLocationDto : LocationDto
 {
     public string? Share { get; set; }
-}
-public class TransactionRequestDTOCopy
-{
-    public PaymentInfo Payment { get; set; }
-    public string Timestamp { get;  set; }
-    public RecipientObj Recipient { get;  set; }
-    public LocationDto SendingLocation { get;  set; }
-    public string EmployeeId { get;  set; }
-    public SenderObj Sender { get; set; }
-    public string Remarks { get;  set; }
 }
 
 public class PaymentInfo
@@ -125,8 +81,6 @@ public class TransactionStatusDTO
     public string TransactionId { get;  set; }
     public object Status { get;  set; }
 }
-
-
 
 public class RemittanceResultDTO
 {
@@ -220,23 +174,6 @@ public class SmtTransaction
     public string TrnsStatus { get; set; }
     public string TrnsSubStatus { get; set; }
     public string ActualStatus { get; set; }
-}
-
-public class Transaction
-{
-    public string TransactionId { get; set; }
-    public string PartnerReference { get; set; }
-    public DateTime Timestamp { get; set; }
-    public string Purpose { get; set; }
-    public string Remarks { get; set; }
-    public string Relationship { get; set; }
-    public string EmployeeId { get; set; }
-
-    public PaymentObj Payment { get; set; }
-    public PersonDto Sender { get; set; }
-    public RecipientObj Recipient { get; set; }
-    public LocationDto SendingLocation { get; set; }
-    public PayeeLocationDto PayeeLocation { get; set; }
 }
 
 public class TeamsNotificationRequest

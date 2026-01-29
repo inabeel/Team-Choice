@@ -1,37 +1,10 @@
-﻿namespace TeamChoice.WebApis.Domain.Exceptions;
-
-public sealed class TransactionValidationException : Exception
-{
-    public TransactionValidationException(string message) : base(message) { }
-}
-
-public sealed class InvalidTransactionStatusException : Exception
-{
-    public InvalidTransactionStatusException(string message) : base(message) { }
-}
-
-public sealed class AlreadyPaidException : Exception
-{
-    public AlreadyPaidException(string message) : base(message) { }
-}
-
-public sealed class TransactionForwardingException : Exception
-{
-    public TransactionForwardingException(string message) : base(message) { }
-}
-
-public sealed class NotFoundException : Exception
-{
-    public NotFoundException(string message) : base(message) { }
-}
+﻿using TeamChoice.WebApis.Domain.Exceptions;
 
 /// <summary>
-/// Thrown when a transaction reference cannot be found in the system.
+/// Thrown when a provided service code is syntactically valid
+/// but not supported or allowed by business rules.
 /// </summary>
-public sealed class TransactionNotFoundException : Exception
+public sealed class InvalidServiceCodeException : TransactionDomainException
 {
-    public TransactionNotFoundException(string transactionReference)
-        : base($"Transaction not found: {transactionReference}")
-    {
-    }
+    public InvalidServiceCodeException(string serviceCode) : base($"Invalid service code: {serviceCode}") { }
 }

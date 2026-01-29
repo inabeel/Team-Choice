@@ -7,7 +7,7 @@ namespace TeamChoice.WebApis.Contracts.Exchanges;
 public record ExchangeDetailsDto
 {
     public PayerDto? Payer { get; init; }
-    public RecipientDto? Recipient { get; init; }
+    public ExchangeRecipientDto? Recipient { get; init; }
 }
 
 public record PayerDto
@@ -18,7 +18,7 @@ public record PayerDto
     public string? CurrencyCode { get; init; }
 }
 
-public record RecipientDto
+public record ExchangeRecipientDto
 {
     public decimal Amount { get; init; }
     public string? CurrencyCode { get; init; }

@@ -17,8 +17,10 @@ namespace TeamChoice.WebApis.Contracts.DTOs
     // Response DTOs
     public class TplusApiResponse
     {
-        [JsonProperty("accounts")]
-        public List<TplusAccount> Accounts { get; set; }
+        public List<TplusAccount> TPlusAccValidate { get; set; }
+        public string StatusCode { get; set; }
+        public string Status { get; set; }
+        public DateTime TimeStamp { get; set; }
     }
 
     public class TplusAccount

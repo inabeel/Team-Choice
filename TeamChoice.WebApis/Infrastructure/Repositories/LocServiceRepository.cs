@@ -47,8 +47,7 @@ namespace TeamChoice.WebApis.Infrastructure.Repositories
                     CountryCode = reader["CountryCode"] as string,
                     Description = reader["Description"] as string,
                     Active = reader["Status"] != DBNull.Value && Convert.ToBoolean(reader["Status"])
-                }
-            );
+                }, CancellationToken.None);
         }
     }
 }

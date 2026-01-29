@@ -28,6 +28,6 @@ public class LocServicesService : ILocServicesService
         }
 
         // Mapping entities to DTOs
-        return services.Select(LocServiceMapper.ToResponse);
+        return services.Select(LocServiceMapper.ToFullResponse);
     }
 }

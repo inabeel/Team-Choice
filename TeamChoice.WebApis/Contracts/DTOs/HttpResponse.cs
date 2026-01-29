@@ -1,8 +1,10 @@
-﻿namespace TeamChoice.WebApis.Contracts.DTOs;
+﻿using TeamChoice.WebApis.Contracts.DTOs.Transactions;
+
+namespace TeamChoice.WebApis.Contracts.DTOs;
 
 public record HttpResponseDto<T>
 {
-    public DateTime? TimeStamp { get; init; }
+    public DateTimeOffset? TimeStamp { get; init; }
     public int StatusCode { get; init; }
     public string? Status { get; init; }
     public string? Source { get; init; }
